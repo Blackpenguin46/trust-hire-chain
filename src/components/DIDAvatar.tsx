@@ -36,18 +36,16 @@ const DIDAvatar: React.FC<DIDAvatarProps> = ({
       onMouseLeave={() => setShowCredentials(false)}
     >
       <div className="relative">
-        <Avatar className={`${sizeClasses[size]} border-2 border-transparent bg-gradient-to-r from-[#00FFD1] to-[#6B46FF] p-0.5`}>
-          <div className="w-full h-full bg-[#1A1A1A] rounded-full flex items-center justify-center">
-            <AvatarImage src={avatar} alt={name} className="rounded-full" />
-            <AvatarFallback className="bg-gradient-to-r from-[#00FFD1]/20 to-[#6B46FF]/20 text-[#00FFD1] font-semibold">
-              {initials}
-            </AvatarFallback>
-          </div>
+        <Avatar className={`${sizeClasses[size]} border-2 border-[#00FFD1]`}>
+          <AvatarImage src={avatar} alt={name} className="rounded-full" />
+          <AvatarFallback className="bg-[#2A2A2A] text-[#00FFD1] font-semibold">
+            {initials}
+          </AvatarFallback>
         </Avatar>
 
         {/* DID Verification Badge */}
         {didVerified && (
-          <div className="absolute -bottom-1 -right-1 bg-gradient-to-r from-[#00FFD1] to-[#6B46FF] rounded-full p-1 verified-pulse">
+          <div className="absolute -bottom-1 -right-1 bg-[#00FFD1] rounded-full p-1">
             <Shield className="h-3 w-3 text-[#0B1B2B]" />
           </div>
         )}
@@ -56,7 +54,7 @@ const DIDAvatar: React.FC<DIDAvatarProps> = ({
       {/* Credentials Tooltip */}
       {showCredentials && credentials.length > 0 && (
         <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50 slide-in">
-          <div className="cyber-card p-4 min-w-[200px] max-w-[280px]">
+          <div className="clean-card p-4 min-w-[200px] max-w-[280px]">
             <div className="flex items-center space-x-2 mb-3">
               <Lock className="h-4 w-4 text-[#00FFD1]" />
               <span className="text-sm font-semibold text-white">Verified Credentials</span>
@@ -69,7 +67,7 @@ const DIDAvatar: React.FC<DIDAvatarProps> = ({
                 </div>
               ))}
             </div>
-            <Badge className="mt-3 bg-gradient-to-r from-[#00FFD1]/20 to-[#6B46FF]/20 text-[#00FFD1] border border-[#00FFD1]/30">
+            <Badge className="verified-badge mt-3">
               Blockchain Verified
             </Badge>
           </div>

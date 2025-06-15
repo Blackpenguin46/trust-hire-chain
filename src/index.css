@@ -6,19 +6,19 @@
 /* Import Web3-native font - Space Grotesk */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
-/* Web3-native design system */
+/* Clean Web3 design system */
 @layer base {
   :root {
-    /* Primary Web3 palette */
+    /* Professional Web3 palette */
     --midnight-blue: #0B1B2B;
     --electric-teal: #00FFD1;
     --soft-graphite: #1A1A1A;
-    --neon-purple: #6B46FF;
-    --cyber-orange: #FF6B35;
+    --charcoal: #2A2A2A;
+    --pure-white: #FFFFFF;
     
     /* Semantic colors */
     --background: 11 27 43; /* Deep Midnight Blue */
-    --foreground: 0 255 209; /* Electric Teal */
+    --foreground: 255 255 255; /* Pure White */
 
     --card: 26 26 26; /* Soft Graphite */
     --card-foreground: 255 255 255;
@@ -29,14 +29,14 @@
     --primary: 0 255 209; /* Electric Teal */
     --primary-foreground: 11 27 43;
 
-    --secondary: 107 70 255; /* Neon Purple */
+    --secondary: 42 42 42; /* Charcoal */
     --secondary-foreground: 255 255 255;
 
     --muted: 40 40 40;
     --muted-foreground: 160 160 160;
 
-    --accent: 255 107 53; /* Cyber Orange */
-    --accent-foreground: 255 255 255;
+    --accent: 0 255 209; /* Electric Teal */
+    --accent-foreground: 11 27 43;
 
     --destructive: 239 68 68;
     --destructive-foreground: 255 255 255;
@@ -45,7 +45,7 @@
     --input: 32 32 32;
     --ring: 0 255 209;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
   }
 }
 
@@ -66,82 +66,46 @@
   }
 }
 
-/* Custom Web3 animations */
+/* Clean Web3 components */
 @layer components {
-  .neon-glow {
-    box-shadow: 0 0 20px rgba(0, 255, 209, 0.3), 0 0 40px rgba(0, 255, 209, 0.1);
-    transition: all 0.3s ease;
+  .clean-card {
+    @apply bg-[#1A1A1A] border border-gray-700 rounded-lg;
   }
 
-  .neon-glow:hover {
-    box-shadow: 0 0 30px rgba(0, 255, 209, 0.5), 0 0 60px rgba(0, 255, 209, 0.2);
-    transform: translateY(-2px);
+  .professional-button {
+    @apply bg-[#00FFD1] text-[#0B1B2B] font-semibold px-6 py-3 rounded-lg;
+    transition: all 0.2s ease;
   }
 
-  .cyber-card {
-    @apply bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-xl border border-gray-700/50 rounded-xl;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  .professional-button:hover {
+    @apply bg-[#00FFD1]/90;
   }
 
-  .cyber-button {
-    @apply bg-gradient-to-r from-[#00FFD1] to-[#6B46FF] text-[#0B1B2B] font-semibold px-6 py-3 rounded-lg;
-    box-shadow: 0 0 20px rgba(0, 255, 209, 0.3);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+  .secondary-button {
+    @apply bg-[#2A2A2A] text-white border border-gray-600 font-semibold px-6 py-3 rounded-lg;
+    transition: all 0.2s ease;
   }
 
-  .cyber-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(0, 255, 209, 0.5);
+  .secondary-button:hover {
+    @apply bg-[#2A2A2A]/80 border-gray-500;
   }
 
-  .cyber-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+  .verified-badge {
+    @apply bg-[#00FFD1]/20 text-[#00FFD1] border border-[#00FFD1]/30;
   }
 
-  .cyber-button:hover::before {
-    left: 100%;
-  }
-
-  .verified-pulse {
-    animation: pulse-teal 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @keyframes pulse-teal {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-      box-shadow: 0 0 20px rgba(0, 255, 209, 0.8);
-    }
-  }
-
-  .floating {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+  .accent-text {
+    @apply text-[#00FFD1];
   }
 
   .slide-in {
-    animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: slideIn 0.6s ease-out;
   }
 
   @keyframes slideIn {
     0% {
       opacity: 0;
-      transform: translateY(50px);
+      transform: translateY(30px);
     }
     100% {
       opacity: 1;
@@ -149,14 +113,13 @@
     }
   }
 
-  .text-gradient {
-    @apply bg-gradient-to-r from-[#00FFD1] via-[#6B46FF] to-[#FF6B35] bg-clip-text text-transparent;
+  .floating {
+    animation: float 4s ease-in-out infinite;
   }
 
-  .border-gradient {
-    border: 1px solid transparent;
-    background: linear-gradient(#1A1A1A, #1A1A1A) padding-box,
-                linear-gradient(45deg, #00FFD1, #6B46FF, #FF6B35) border-box;
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
   }
 }
 
@@ -170,10 +133,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #00FFD1, #6B46FF);
+  background: #00FFD1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #00FFD1, #FF6B35);
+  background: #00FFD1/80;
 }
