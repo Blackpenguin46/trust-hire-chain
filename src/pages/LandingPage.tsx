@@ -1,266 +1,270 @@
 
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, Shield, Zap, Users, ArrowRight, Sparkles, Eye, Search } from 'lucide-react';
+import { Check, Shield, Zap, Users, ArrowRight, Sparkles, Eye, Search, Lock, Globe, Coins } from 'lucide-react';
+import Web3Navigation from '@/components/Web3Navigation';
+import DIDAvatar from '@/components/DIDAvatar';
 
 const LandingPage = () => {
+  const features = [
+    {
+      icon: Shield,
+      title: "Sovereign Identity",
+      description: "Complete control over your professional data with granular privacy settings.",
+      gradient: "from-[#00FFD1] to-[#6B46FF]"
+    },
+    {
+      icon: Check,
+      title: "Immutable Verification",
+      description: "Blockchain-verified credentials eliminate resume fraud permanently.",
+      gradient: "from-[#6B46FF] to-[#FF6B35]"
+    },
+    {
+      icon: Users,
+      title: "Decentralized Hiring",
+      description: "DID-based identities give you sovereignty over your professional persona.",
+      gradient: "from-[#FF6B35] to-[#00FFD1]"
+    },
+    {
+      icon: Zap,
+      title: "Zero-Knowledge Proofs",
+      description: "Every hiring decision is recorded immutably with complete transparency.",
+      gradient: "from-[#00FFD1] via-[#6B46FF] to-[#FF6B35]"
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "Senior Developer",
+      avatar: "/placeholder.svg",
+      credentials: ["MIT Computer Science", "Google Cloud Certified", "Ethereum Developer"],
+      quote: "Finally, a platform where my skills speak louder than corporate bias."
+    },
+    {
+      name: "Marcus Johnson",
+      role: "Talent Acquisition Lead",
+      avatar: "/placeholder.svg", 
+      credentials: ["HR Certification", "Blockchain Verified", "5+ Years Experience"],
+      quote: "Zero fake resumes, 100% verified talent. This is the future of hiring."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B1B2B] via-[#1A1A1A] to-[#0B1B2B] text-white overflow-hidden">
       {/* Animated background particles */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse opacity-60"></div>
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-purple-400 rounded-full animate-pulse opacity-40 animation-delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-cyan-400 rounded-full animate-pulse opacity-30 animation-delay-2000"></div>
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-[#00FFD1] rounded-full verified-pulse opacity-60"></div>
+        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-[#6B46FF] rounded-full verified-pulse opacity-40" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-[#FF6B35] rounded-full verified-pulse opacity-30" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 right-1/4 w-2 h-2 bg-[#00FFD1] rounded-full verified-pulse opacity-50" style={{animationDelay: '3s'}}></div>
       </div>
 
-      {/* Header */}
-      <header className="container mx-auto px-4 py-6 relative z-10">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur-lg opacity-30"></div>
-              <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-2xl px-4 py-2 rounded-xl">
-                TrustHire Chain
-              </div>
-            </div>
-            <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-0 animate-pulse">
-              ⛓️ Blockchain Powered
-            </Badge>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => window.location.href = '/how-it-works'} className="text-gray-300 hover:text-white">
-              How It Works
-            </Button>
-            <Button variant="ghost" onClick={() => window.location.href = '/for-job-seekers'} className="text-gray-300 hover:text-white">
-              For Job Seekers
-            </Button>
-            <Button variant="ghost" onClick={() => window.location.href = '/for-employers'} className="text-gray-300 hover:text-white">
-              For Employers
-            </Button>
-            <Button variant="ghost" onClick={() => window.location.href = '/about'} className="text-gray-300 hover:text-white">
-              About
-            </Button>
-            <Button 
-              onClick={() => window.location.href = '/auth'}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
-              Get Started <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </nav>
-      </header>
+      <Web3Navigation />
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center relative z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-6 inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-            <Sparkles className="h-4 w-4 text-yellow-400" />
-            <span className="text-sm">Revolutionary Hiring Platform</span>
-          </div>
-          
-          <h1 className="text-6xl md:text-7xl font-bold mb-8 leading-tight">
-            <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
-              Centralized Hiring.
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              Decentralized Trust.
-            </span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed max-w-3xl mx-auto">
-            Connect job seekers and employers through blockchain-verified credentials, 
-            transparent application tracking, and tamper-proof hiring processes.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button 
-              size="lg" 
-              className="text-lg px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105"
-              onClick={() => window.location.href = '/for-job-seekers'}
-            >
-              <Search className="mr-2 h-5 w-5" />
-              Explore Jobs
-            </Button>
-            <Button 
-              size="lg" 
-              className="text-lg px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0 shadow-2xl hover:shadow-green-500/25 transition-all duration-300 transform hover:scale-105"
-              onClick={() => window.location.href = '/verify-credentials'}
-            >
-              <Eye className="mr-2 h-5 w-5" />
-              Verify a Credential
-            </Button>
+      <section className="pt-32 pb-20 relative z-10">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-5xl mx-auto">
+            <div className="mb-8 inline-flex items-center space-x-3 cyber-card px-6 py-3 border-gradient">
+              <Sparkles className="h-5 w-5 text-[#00FFD1]" />
+              <span className="text-sm font-medium">Revolutionary Web3 Hiring Protocol</span>
+              <Lock className="h-4 w-4 text-[#6B46FF]" />
+            </div>
+            
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight slide-in">
+              <span className="text-white">
+                Centralized Hiring.
+              </span>
+              <br />
+              <span className="text-gradient floating">
+                Decentralized Trust.
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed max-w-4xl mx-auto slide-in" style={{animationDelay: '0.2s'}}>
+              The first blockchain-powered hiring platform where talent owns their data, 
+              credentials are immutable, and every decision is transparent.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center slide-in" style={{animationDelay: '0.4s'}}>
+              <Button 
+                size="lg" 
+                className="cyber-button text-lg px-10 py-6"
+                onClick={() => window.location.href = '/for-job-seekers'}
+              >
+                <Search className="mr-3 h-6 w-6" />
+                Explore Opportunities
+              </Button>
+              <Button 
+                size="lg" 
+                className="bg-transparent border-2 border-[#00FFD1] text-[#00FFD1] hover:bg-[#00FFD1]/10 text-lg px-10 py-6 rounded-lg transition-all duration-300 neon-glow"
+                onClick={() => window.location.href = '/verify-credentials'}
+              >
+                <Eye className="mr-3 h-6 w-6" />
+                Live Verification Demo
+              </Button>
+            </div>
+
+            {/* Trust indicators */}
+            <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-gradient mb-2">100%</div>
+                <div className="text-sm text-gray-400">Fraud Prevention</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-gradient mb-2">∞</div>
+                <div className="text-sm text-gray-400">Data Sovereignty</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-gradient mb-2">0</div>
+                <div className="text-sm text-gray-400">Trust Required</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features Overview */}
-      <section className="container mx-auto px-4 py-20 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-            Built on Trust, Powered by Blockchain
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Experience the next generation of hiring with our comprehensive blockchain-powered platform.
-          </p>
+      {/* Features Grid */}
+      <section className="py-20 relative z-10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 text-gradient">
+              Built on Web3 Principles
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Experience the next generation of hiring with our comprehensive blockchain-powered protocol.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <Card key={feature.title} className="cyber-card hover:neon-glow transition-all duration-500 group floating" style={{animationDelay: `${index * 0.2}s`}}>
+                <CardHeader className="text-center pb-4">
+                  <div className={`w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className="h-8 w-8 text-[#0B1B2B]" />
+                  </div>
+                  <CardTitle className="text-white text-lg group-hover:text-[#00FFD1] transition-colors">
+                    {feature.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-300 text-center text-sm leading-relaxed">
+                    {feature.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
+      </section>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Shield className="h-8 w-8 text-white" />
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gradient-to-r from-[#0B1B2B]/50 to-[#1A1A1A]/50 backdrop-blur-sm relative z-10">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gradient">
+            Trusted by Web3 Natives
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {testimonials.map((testimonial, index) => (
+              <div key={testimonial.name} className="cyber-card p-8 hover:neon-glow transition-all duration-300">
+                <div className="flex items-center space-x-4 mb-6">
+                  <DIDAvatar 
+                    name={testimonial.name}
+                    avatar={testimonial.avatar}
+                    didVerified={true}
+                    credentials={testimonial.credentials}
+                    size="lg"
+                  />
+                  <div>
+                    <h4 className="font-bold text-white">{testimonial.name}</h4>
+                    <p className="text-[#00FFD1] text-sm">{testimonial.role}</p>
+                  </div>
+                </div>
+                <blockquote className="text-gray-300 italic leading-relaxed">
+                  "{testimonial.quote}"
+                </blockquote>
               </div>
-              <CardTitle className="text-white text-lg">Data Ownership</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-gray-300 text-center text-sm">
-                Complete control over your professional data with granular privacy settings.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Check className="h-8 w-8 text-white" />
-              </div>
-              <CardTitle className="text-white text-lg">VC Verification</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-gray-300 text-center text-sm">
-                Blockchain-verified credentials eliminate resume fraud permanently.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Users className="h-8 w-8 text-white" />
-              </div>
-              <CardTitle className="text-white text-lg">DID-Based Identity</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-gray-300 text-center text-sm">
-                Decentralized identities give you sovereignty over your professional persona.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Zap className="h-8 w-8 text-white" />
-              </div>
-              <CardTitle className="text-white text-lg">Full Transparency</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-gray-300 text-center text-sm">
-                Every hiring decision is recorded immutably with complete transparency.
-              </CardDescription>
-            </CardContent>
-          </Card>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* How It Works Preview */}
-      <section className="bg-black/20 backdrop-blur-sm py-20 relative z-10">
+      <section className="py-20 relative z-10">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent">
-            See How It Works
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gradient">
+            The Protocol in Action
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-16 max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 max-w-6xl mx-auto">
             <div className="space-y-8">
               <h3 className="text-3xl font-bold text-white mb-8 flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-4"></div>
-                For Job Seekers
+                <div className="w-8 h-8 bg-gradient-to-r from-[#00FFD1] to-[#6B46FF] rounded-full mr-4"></div>
+                For Talent
               </h3>
               
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="h-3 w-3 text-white" />
+              <div className="space-y-6">
+                {[
+                  { title: "DID Onboarding", desc: "Create your sovereign identity on-chain" },
+                  { title: "Credential Minting", desc: "Transform achievements into verifiable credentials" },
+                  { title: "Privacy Controls", desc: "Granular data sharing with zero-knowledge proofs" },
+                  { title: "Reputation Building", desc: "Immutable track record across all platforms" }
+                ].map((step, index) => (
+                  <div key={step.title} className="flex items-start space-x-4 group hover:bg-[#00FFD1]/5 p-4 rounded-lg transition-all duration-300">
+                    <div className="w-8 h-8 bg-gradient-to-r from-[#00FFD1] to-[#6B46FF] rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
+                      <Check className="h-4 w-4 text-[#0B1B2B]" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-white group-hover:text-[#00FFD1] transition-colors">{step.title}</h4>
+                      <p className="text-gray-300 text-sm">{step.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-white">DID Onboarding</h4>
-                    <p className="text-gray-300">Create your decentralized identity and establish data ownership</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="h-3 w-3 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white">Credential Verification</h4>
-                    <p className="text-gray-300">Get your education and skills verified on the blockchain</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="h-3 w-3 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white">Application Lifecycle</h4>
-                    <p className="text-gray-300">Track every status change with immutable transparency</p>
-                  </div>
-                </div>
+                ))}
               </div>
 
               <Button 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg"
+                className="cyber-button"
                 onClick={() => window.location.href = '/for-job-seekers'}
               >
-                Learn More for Job Seekers
+                Start Your Web3 Career
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
 
             <div className="space-y-8">
               <h3 className="text-3xl font-bold text-white mb-8 flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mr-4"></div>
-                For Employers
+                <div className="w-8 h-8 bg-gradient-to-r from-[#6B46FF] to-[#FF6B35] rounded-full mr-4"></div>
+                For Organizations
               </h3>
               
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="h-3 w-3 text-white" />
+              <div className="space-y-6">
+                {[
+                  { title: "Entity Verification", desc: "Prove organizational legitimacy on-chain" },
+                  { title: "Smart Contracts", desc: "Automated, transparent hiring processes" },
+                  { title: "Credential Analysis", desc: "AI-powered verification of candidate claims" },
+                  { title: "Compliance Automation", desc: "Built-in regulatory compliance and reporting" }
+                ].map((step, index) => (
+                  <div key={step.title} className="flex items-start space-x-4 group hover:bg-[#6B46FF]/5 p-4 rounded-lg transition-all duration-300">
+                    <div className="w-8 h-8 bg-gradient-to-r from-[#6B46FF] to-[#FF6B35] rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
+                      <Check className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-white group-hover:text-[#6B46FF] transition-colors">{step.title}</h4>
+                      <p className="text-gray-300 text-sm">{step.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-white">Company Vetting</h4>
-                    <p className="text-gray-300">Complete verification to access our certified talent pool</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="h-3 w-3 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white">Credential Integration</h4>
-                    <p className="text-gray-300">Instantly verify candidate credentials with blockchain data</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="h-3 w-3 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white">Justification-Required Actions</h4>
-                    <p className="text-gray-300">All hiring decisions require transparent justification</p>
-                  </div>
-                </div>
+                ))}
               </div>
 
               <Button 
-                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0 shadow-lg"
+                className="bg-gradient-to-r from-[#6B46FF] to-[#FF6B35] text-white hover:shadow-lg hover:shadow-[#6B46FF]/25 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
                 onClick={() => window.location.href = '/for-employers'}
               >
-                Learn More for Employers
+                Deploy Your Protocol
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -269,77 +273,89 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20 text-center relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm rounded-3xl p-12 border border-white/10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-              Ready to Transform Your Hiring Experience?
-            </h2>
-            <p className="text-xl text-gray-300 mb-10">
-              Join thousands of job seekers and employers who trust blockchain technology for fair, transparent hiring.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button 
-                size="lg" 
-                className="text-xl px-12 py-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
-                onClick={() => window.location.href = '/auth'}
-              >
-                Get Started Today
-                <Sparkles className="ml-3 h-6 w-6" />
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="text-xl px-12 py-6 border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300"
-                onClick={() => window.location.href = '/verify-credentials'}
-              >
-                Try Live Demo
-              </Button>
+      <section className="py-20 relative z-10">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="cyber-card p-12 border-gradient neon-glow">
+              <div className="flex justify-center mb-8">
+                <div className="flex items-center space-x-4">
+                  <Globe className="h-8 w-8 text-[#00FFD1]" />
+                  <Coins className="h-8 w-8 text-[#6B46FF]" />
+                  <Shield className="h-8 w-8 text-[#FF6B35]" />
+                </div>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gradient">
+                Join the Decentralized Workforce Revolution
+              </h2>
+              <p className="text-xl text-gray-300 mb-10 leading-relaxed">
+                Where talent sovereignty meets organizational transparency. 
+                Built on blockchain, powered by community, secured by cryptography.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Button 
+                  size="lg" 
+                  className="cyber-button text-xl px-12 py-6"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  Launch Protocol
+                  <Sparkles className="ml-3 h-6 w-6" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  className="bg-transparent border-2 border-[#6B46FF] text-[#6B46FF] hover:bg-[#6B46FF]/10 text-xl px-12 py-6 rounded-lg transition-all duration-300"
+                  onClick={() => window.location.href = '/verify-credentials'}
+                >
+                  Experience Verification
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black/40 backdrop-blur-sm py-12 border-t border-white/10 relative z-10">
+      <footer className="bg-gradient-to-r from-[#0B1B2B]/80 to-[#1A1A1A]/80 backdrop-blur-sm py-16 border-t border-gray-700/30 relative z-10">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="font-bold text-2xl mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <div className="font-bold text-3xl mb-4 text-gradient">
                 TrustHire Chain
               </div>
-              <p className="text-gray-400 mb-4">
-                Blockchain-powered hiring platform for the future of work
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                The sovereign hiring protocol for the decentralized workforce
               </p>
+              <Badge className="bg-gradient-to-r from-[#00FFD1]/20 to-[#6B46FF]/20 text-[#00FFD1] border border-[#00FFD1]/30">
+                Web3 Native
+              </Badge>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-4">Platform</h4>
-              <div className="space-y-2">
-                <p className="text-gray-400 hover:text-white cursor-pointer" onClick={() => window.location.href = '/for-job-seekers'}>For Job Seekers</p>
-                <p className="text-gray-400 hover:text-white cursor-pointer" onClick={() => window.location.href = '/for-employers'}>For Employers</p>
-                <p className="text-gray-400 hover:text-white cursor-pointer" onClick={() => window.location.href = '/verify-credentials'}>Verify Credentials</p>
+              <h4 className="font-semibold text-white mb-6">Protocol</h4>
+              <div className="space-y-3">
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors" onClick={() => window.location.href = '/for-job-seekers'}>For Talent</p>
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors" onClick={() => window.location.href = '/for-employers'}>For Organizations</p>
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors" onClick={() => window.location.href = '/verify-credentials'}>Verify Credentials</p>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-4">Company</h4>
-              <div className="space-y-2">
-                <p className="text-gray-400 hover:text-white cursor-pointer" onClick={() => window.location.href = '/about'}>About Us</p>
-                <p className="text-gray-400 hover:text-white cursor-pointer" onClick={() => window.location.href = '/how-it-works'}>How It Works</p>
-                <p className="text-gray-400 hover:text-white cursor-pointer" onClick={() => window.location.href = '/contact'}>Contact</p>
+              <h4 className="font-semibold text-white mb-6">Foundation</h4>
+              <div className="space-y-3">
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors" onClick={() => window.location.href = '/about'}>Mission</p>
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors" onClick={() => window.location.href = '/how-it-works'}>Architecture</p>
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors" onClick={() => window.location.href = '/contact'}>Community</p>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-4">Community</h4>
-              <div className="space-y-2">
-                <p className="text-gray-400 hover:text-white cursor-pointer">Discord</p>
-                <p className="text-gray-400 hover:text-white cursor-pointer">Twitter</p>
-                <p className="text-gray-400 hover:text-white cursor-pointer">GitHub</p>
+              <h4 className="font-semibold text-white mb-6">Ecosystem</h4>
+              <div className="space-y-3">
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors">Discord</p>
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors">GitHub</p>
+                <p className="text-gray-400 hover:text-[#00FFD1] cursor-pointer transition-colors">Documentation</p>
               </div>
             </div>
           </div>
-          <div className="border-t border-white/10 mt-8 pt-8 text-center">
+          <div className="border-t border-gray-700/30 mt-12 pt-8 text-center">
             <p className="text-gray-400">
-              © 2024 TrustHire Chain. Empowering talent through decentralized trust.
+              © 2024 TrustHire Chain Protocol. Empowering sovereign talent through decentralized trust.
             </p>
           </div>
         </div>
@@ -349,4 +365,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
