@@ -12,7 +12,7 @@ interface DIDAvatarProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const DIDAvatar: React.FC<DIDAvatar> = ({ 
+const DIDAvatar: React.FC<DIDAvatarProps> = ({ 
   name, 
   avatar, 
   didVerified = false, 
