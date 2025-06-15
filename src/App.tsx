@@ -5,6 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import LandingPage from "./pages/LandingPage";
+import Auth from "./pages/Auth";
+import JobSeekerDashboard from "./pages/JobSeekerDashboard";
+import EmployerDashboard from "./pages/EmployerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -15,7 +19,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard/seeker" element={<JobSeekerDashboard />} />
+          <Route path="/dashboard/employer" element={<EmployerDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
