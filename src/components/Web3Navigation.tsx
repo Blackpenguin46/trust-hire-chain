@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Bell, User, LogOut, Menu, X, Wallet } from 'lucide-react';
+import { Bell, User, LogOut, Menu, X } from 'lucide-react';
 
 interface Web3NavigationProps {
   userType?: 'seeker' | 'employer';
@@ -84,13 +84,20 @@ const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
                   </Button>
                 </>
               ) : (
-                <Button 
-                  onClick={() => window.location.href = '/auth'}
-                  className="primary-button hidden md:flex items-center text-sm font-medium group"
-                >
-                  <Wallet className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
-                  Launch Platform
-                </Button>
+                <div className="hidden md:flex items-center space-x-3">
+                  <Button 
+                    onClick={() => window.location.href = '/auth'}
+                    className="secondary-button text-sm font-medium"
+                  >
+                    Sign In
+                  </Button>
+                  <Button 
+                    onClick={() => window.location.href = '/auth'}
+                    className="primary-button text-sm font-medium"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
               )}
 
               {/* Mobile Menu Toggle */}
@@ -120,7 +127,16 @@ const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
                   </a>
                 ))}
                 {!userType && (
-                  <div className="px-2 pt-4">
+                  <div className="px-2 pt-4 space-y-2">
+                    <Button 
+                      onClick={() => {
+                        window.location.href = '/auth';
+                        setIsMenuOpen(false);
+                      }}
+                      className="secondary-button w-full"
+                    >
+                      Sign In
+                    </Button>
                     <Button 
                       onClick={() => {
                         window.location.href = '/auth';
@@ -128,8 +144,7 @@ const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
                       }}
                       className="primary-button w-full"
                     >
-                      <Wallet className="mr-2 h-4 w-4" />
-                      Launch Platform
+                      Sign Up
                     </Button>
                   </div>
                 )}

@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Shield, Users, ArrowRight, Search, Lock, Globe, TrendingUp, CheckCircle2, Briefcase, Zap } from 'lucide-react';
+import { Check, Shield, Users, ArrowRight, Search, Lock, Globe, TrendingUp, CheckCircle2, Briefcase } from 'lucide-react';
 import Web3Navigation from '@/components/Web3Navigation';
 import DIDAvatar from '@/components/DIDAvatar';
 
@@ -83,10 +82,9 @@ const LandingPage = () => {
               <Button 
                 size="lg" 
                 className="secondary-button text-lg px-10 py-6"
-                onClick={() => window.location.href = '/verify-credentials'}
+                onClick={() => window.location.href = '/auth'}
               >
-                <Zap className="mr-3 h-5 w-5" />
-                Live Demo
+                Get Started
               </Button>
             </div>
 
@@ -304,15 +302,14 @@ const LandingPage = () => {
                   className="primary-button text-xl px-12 py-6"
                   onClick={() => window.location.href = '/auth'}
                 >
-                  Launch Protocol
-                  <Zap className="ml-3 h-5 w-5" />
+                  Get Started
                 </Button>
                 <Button 
                   size="lg" 
                   className="secondary-button text-xl px-12 py-6"
                   onClick={() => window.location.href = '/verify-credentials'}
                 >
-                  Experience Verification
+                  Learn More
                 </Button>
               </div>
             </div>
