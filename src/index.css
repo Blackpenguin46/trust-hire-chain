@@ -3,49 +3,33 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Web3-native font - Space Grotesk */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Clean Web3 design system */
+/* Clean minimal dark theme */
 @layer base {
   :root {
-    /* Professional Web3 palette */
-    --midnight-blue: #0B1B2B;
-    --electric-teal: #00FFD1;
-    --soft-graphite: #1A1A1A;
-    --charcoal: #2A2A2A;
-    --pure-white: #FFFFFF;
+    /* Minimal professional palette */
+    --background: 13 17 23; /* #0D1117 */
+    --foreground: 237 238 242; /* #EDEEF2 */
+    --accent: 54 180 165; /* #36B4A5 */
+    --accent-hover: 42 164 150; /* Darker shade for hover */
+    --muted: 48 54 61; /* #303641 */
+    --border: 33 38 45; /* #21262D */
+    --card: 22 27 34; /* #161B22 */
     
-    /* Semantic colors */
-    --background: 11 27 43; /* Deep Midnight Blue */
-    --foreground: 255 255 255; /* Pure White */
-
-    --card: 26 26 26; /* Soft Graphite */
-    --card-foreground: 255 255 255;
-
-    --popover: 26 26 26;
-    --popover-foreground: 255 255 255;
-
-    --primary: 0 255 209; /* Electric Teal */
-    --primary-foreground: 11 27 43;
-
-    --secondary: 42 42 42; /* Charcoal */
-    --secondary-foreground: 255 255 255;
-
-    --muted: 40 40 40;
-    --muted-foreground: 160 160 160;
-
-    --accent: 0 255 209; /* Electric Teal */
-    --accent-foreground: 11 27 43;
-
-    --destructive: 239 68 68;
+    --primary: 54 180 165;
+    --primary-foreground: 13 17 23;
+    --secondary: 48 54 61;
+    --secondary-foreground: 237 238 242;
+    --muted: 48 54 61;
+    --muted-foreground: 139 148 158;
+    --destructive: 248 81 73;
     --destructive-foreground: 255 255 255;
-
-    --border: 64 64 64;
-    --input: 32 32 32;
-    --ring: 0 255 209;
-
-    --radius: 0.5rem;
+    --border: 33 38 45;
+    --input: 33 38 45;
+    --ring: 54 180 165;
+    --radius: 8px;
   }
 }
 
@@ -55,9 +39,10 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-[#0B1B2B] via-[#1A1A1A] to-[#0B1B2B] text-white;
-    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-attachment: fixed;
+    @apply bg-[#0D1117] text-[#EDEEF2];
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
     min-height: 100vh;
   }
 
@@ -66,60 +51,51 @@
   }
 }
 
-/* Clean Web3 components */
+/* Professional components */
 @layer components {
-  .clean-card {
-    @apply bg-[#1A1A1A] border border-gray-700 rounded-lg;
+  .professional-card {
+    @apply bg-[#161B22] border border-[#21262D] rounded-lg;
   }
 
-  .professional-button {
-    @apply bg-[#00FFD1] text-[#0B1B2B] font-semibold px-6 py-3 rounded-lg;
+  .primary-button {
+    @apply bg-[#36B4A5] text-[#0D1117] font-medium px-6 py-3 rounded-lg;
     transition: all 0.2s ease;
   }
 
-  .professional-button:hover {
-    @apply bg-[#00FFD1]/90;
+  .primary-button:hover {
+    @apply bg-[#2AA294] shadow-lg shadow-[#36B4A5]/25;
   }
 
   .secondary-button {
-    @apply bg-[#2A2A2A] text-white border border-gray-600 font-semibold px-6 py-3 rounded-lg;
+    @apply bg-transparent border border-[#36B4A5] text-[#36B4A5] font-medium px-6 py-3 rounded-lg;
     transition: all 0.2s ease;
   }
 
   .secondary-button:hover {
-    @apply bg-[#2A2A2A]/80 border-gray-500;
+    @apply bg-[#36B4A5]/10 border-[#2AA294];
   }
 
-  .verified-badge {
-    @apply bg-[#00FFD1]/20 text-[#00FFD1] border border-[#00FFD1]/30;
+  .nav-link {
+    @apply text-[#EDEEF2]/70 hover:text-[#EDEEF2] transition-all duration-200 relative;
   }
 
-  .accent-text {
-    @apply text-[#00FFD1];
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-[#36B4A5] transition-all duration-300;
   }
 
-  .slide-in {
-    animation: slideIn 0.6s ease-out;
+  .nav-link:hover::after {
+    @apply w-full;
   }
 
-  @keyframes slideIn {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .floating {
-    animation: float 4s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+  .scroll-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #36B4A5, #2AA294);
+    z-index: 1000;
+    transition: width 0.1s ease;
   }
 }
 
@@ -129,14 +105,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #1A1A1A;
+  background: #161B22;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #00FFD1;
+  background: #36B4A5;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00FFD1/80;
+  background: #2AA294;
 }

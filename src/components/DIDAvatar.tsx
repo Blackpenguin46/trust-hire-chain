@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Shield, CheckCircle, Lock } from 'lucide-react';
 
 interface DIDAvatarProps {
@@ -36,40 +35,40 @@ const DIDAvatar: React.FC<DIDAvatarProps> = ({
       onMouseLeave={() => setShowCredentials(false)}
     >
       <div className="relative">
-        <Avatar className={`${sizeClasses[size]} border-2 border-[#00FFD1]`}>
+        <Avatar className={`${sizeClasses[size]} border-2 border-[#36B4A5]`}>
           <AvatarImage src={avatar} alt={name} className="rounded-full" />
-          <AvatarFallback className="bg-[#2A2A2A] text-[#00FFD1] font-semibold">
+          <AvatarFallback className="bg-[#303641] text-[#36B4A5] font-semibold">
             {initials}
           </AvatarFallback>
         </Avatar>
 
         {/* DID Verification Badge */}
         {didVerified && (
-          <div className="absolute -bottom-1 -right-1 bg-[#00FFD1] rounded-full p-1">
-            <Shield className="h-3 w-3 text-[#0B1B2B]" />
+          <div className="absolute -bottom-1 -right-1 bg-[#36B4A5] rounded-full p-1">
+            <Shield className="h-3 w-3 text-[#0D1117]" />
           </div>
         )}
       </div>
 
       {/* Credentials Tooltip */}
       {showCredentials && credentials.length > 0 && (
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50 slide-in">
-          <div className="clean-card p-4 min-w-[200px] max-w-[280px]">
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50">
+          <div className="professional-card p-4 min-w-[200px] max-w-[280px]">
             <div className="flex items-center space-x-2 mb-3">
-              <Lock className="h-4 w-4 text-[#00FFD1]" />
-              <span className="text-sm font-semibold text-white">Verified Credentials</span>
+              <Lock className="h-4 w-4 text-[#36B4A5]" />
+              <span className="text-sm font-semibold text-[#EDEEF2]">Verified Credentials</span>
             </div>
             <div className="space-y-2">
               {credentials.map((credential, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <CheckCircle className="h-3 w-3 text-[#00FFD1]" />
-                  <span className="text-xs text-gray-300">{credential}</span>
+                  <CheckCircle className="h-3 w-3 text-[#36B4A5]" />
+                  <span className="text-xs text-[#EDEEF2]/70">{credential}</span>
                 </div>
               ))}
             </div>
-            <Badge className="verified-badge mt-3">
+            <div className="inline-flex items-center px-2 py-1 rounded-full bg-[#36B4A5]/10 text-[#36B4A5] text-xs font-medium mt-3">
               Blockchain Verified
-            </Badge>
+            </div>
           </div>
         </div>
       )}
