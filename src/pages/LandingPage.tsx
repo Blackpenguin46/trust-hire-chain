@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,7 +43,12 @@ const LandingPage = () => {
       role: "Talent Acquisition Lead",
       avatar: "/placeholder.svg", 
       credentials: ["HR Certification", "Blockchain Verified", "5+ Years Experience"],
-      quote: "Zero fake resumes, 100%      <div className="min-h-screen bg-[--color-background] text-[--color-text-primary]">
+      quote: "Zero fake resumes, 100% verified talent. This is the future of hiring."
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-[--color-background] text-[--color-text-primary]">
       <Web3Navigation />
 
       {/* Hero Section */}
@@ -54,9 +60,10 @@ const LandingPage = () => {
               <span className="text-sm font-medium text-[--color-text-primary]/80">Revolutionary Web3 Hiring Protocol</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">              <span className="text-[--color-text-primary]">Centralized Hiring.</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+              <span className="text-[--color-text-primary]">Centralized Hiring.</span>
               <br />
-              <span className="text-[--color-primary]">Decentralized</span> <span className="text-[--color-text-primary]">Trust.</span>-color-text-primary]">Trust.</span>
+              <span className="text-[--color-primary]">Decentralized</span> <span className="text-[--color-text-primary]">Trust.</span>
             </h1>
             
             <p className="text-xl text-[--color-text-primary]/70 mb-12 leading-relaxed max-w-3xl mx-auto">
@@ -68,8 +75,7 @@ const LandingPage = () => {
               <Button 
                 size="lg" 
                 className="primary-button text-lg px-10 py-6"
-                onClick={() => window.location.href = 
-                '/for-job-seekers'}
+                onClick={() => window.location.href = '/for-job-seekers'}
               >
                 <Search className="mr-3 h-5 w-5" />
                 Explore Opportunities
@@ -77,8 +83,7 @@ const LandingPage = () => {
               <Button 
                 size="lg" 
                 className="secondary-button text-lg px-10 py-6"
-                onClick={() => window.location.href = 
-                '/auth'}
+                onClick={() => window.location.href = '/auth'}
               >
                 Get Started
               </Button>
@@ -221,8 +226,7 @@ const LandingPage = () => {
 
               <Button 
                 className="primary-button"
-                onClick={() => window.location.href = 
-                '/for-job-seekers'}
+                onClick={() => window.location.href = '/for-job-seekers'}
               >
                 Start Your Web3 Career
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -258,8 +262,7 @@ const LandingPage = () => {
 
               <Button 
                 className="primary-button"
-                onClick={() => window.location.href = 
-                '/for-employers'}
+                onClick={() => window.location.href = '/for-employers'}
               >
                 Deploy Your Protocol
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -298,16 +301,14 @@ const LandingPage = () => {
                 <Button 
                   size="lg" 
                   className="primary-button text-xl px-12 py-6"
-                  onClick={() => window.location.href = 
-                  '/auth'}
+                  onClick={() => window.location.href = '/auth'}
                 >
                   Get Started
                 </Button>
                 <Button 
                   size="lg" 
                   className="secondary-button text-xl px-12 py-6"
-                  onClick={() => window.location.href = 
-                  '/verify-credentials'}
+                  onClick={() => window.location.href = '/verify-credentials'}
                 >
                   Learn More
                 </Button>
@@ -335,35 +336,30 @@ const LandingPage = () => {
             <div>
               <h4 className="font-semibold text-[--color-text-primary] mb-6">Protocol</h4>
               <div className="space-y-3">
-                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = 
-                '/for-job-seekers'}>For Talent</p>
-                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = 
-                '/for-employers'}>For Organizations</p>
-                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = 
-                '/verify-credentials'}>Verify Credentials</p>
-              </div>
-            </div>
-            <div>:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = 
-                '/verify-credentials'}>Verify Credentials</p>
-              </div>
-            </div>
-            <div>        <div className="space-y-3">
-                <p className="text-[#EDEEF2]/60 hover:text-[#36B4A5] cursor-pointer transition-colors" onClick={() => window.location.href = '/about'}>Mission</p>
-                <p className="text-[#EDEEF2]/60 hover:text-[#36B4A5] cursor-pointer transition-colors" onClick={() => window.location.href = '/how-it-works'}>Architecture</p>
-                <p className="text-[#EDEEF2]/60 hover:text-[#36B4A5] cursor-pointer transition-colors" onClick={() => window.location.href = '/contact'}>Community</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/for-job-seekers'}>For Talent</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/for-employers'}>For Organizations</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/verify-credentials'}>Verify Credentials</p>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-[#EDEEF2] mb-6">Ecosystem</h4>
+              <h4 className="font-semibold text-[--color-text-primary] mb-6">Learn</h4>
               <div className="space-y-3">
-                <p className="text-[#EDEEF2]/60 hover:text-[#36B4A5] cursor-pointer transition-colors">Discord</p>
-                <p className="text-[#EDEEF2]/60 hover:text-[#36B4A5] cursor-pointer transition-colors">GitHub</p>
-                <p className="text-[#EDEEF2]/60 hover:text-[#36B4A5] cursor-pointer transition-colors">Documentation</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/about'}>Mission</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/how-it-works'}>Architecture</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/contact'}>Community</p>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-[--color-text-primary] mb-6">Ecosystem</h4>
+              <div className="space-y-3">
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors">Discord</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors">GitHub</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors">Documentation</p>
               </div>
             </div>
           </div>
-          <div className="border-t border-[#21262D] mt-12 pt-8 text-center">
-            <p className="text-[#EDEEF2]/60">
+          <div className="border-t border-[--border] mt-12 pt-8 text-center">
+            <p className="text-[--color-text-secondary]/60">
               © 2024 TrustHire Chain Protocol. Empowering sovereign talent through decentralized trust.
             </p>
           </div>
