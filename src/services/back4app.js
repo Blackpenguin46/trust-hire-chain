@@ -2,11 +2,10 @@ import Parse from 'parse/dist/parse.min.js';
 
 export const initializeParse = () => {
   Parse.initialize(
-    Parse.initialize(
-  import.meta.env.VITE_BACK4APP_APP_ID,
-  import.meta.env.VITE_BACK4APP_JS_KEY
-);
-Parse.serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL;
+    import.meta.env.VITE_BACK4APP_APP_ID,
+    import.meta.env.VITE_BACK4APP_JS_KEY
+  );
+  Parse.serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL;
 };
 
 // User Registration (Sign Up)
