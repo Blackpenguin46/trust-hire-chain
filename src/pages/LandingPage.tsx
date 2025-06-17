@@ -42,7 +42,12 @@ const LandingPage = () => {
       role: "Talent Acquisition Lead",
       avatar: "/placeholder.svg", 
       credentials: ["HR Certification", "Blockchain Verified", "5+ Years Experience"],
-      quote: "Zero fake resumes, 100%      <div className="min-h-screen bg-[--color-background] text-[--color-text-primary]">
+      quote: "Zero fake resumes, 100% verified talent. TrustHire has revolutionized how we source and verify candidates."
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[--color-background] text-[--color-text-primary]">
       <Web3Navigation />
 
       {/* Hero Section */}
@@ -54,9 +59,10 @@ const LandingPage = () => {
               <span className="text-sm font-medium text-[--color-text-primary]/80">Revolutionary Web3 Hiring Protocol</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">              <span className="text-[--color-text-primary]">Centralized Hiring.</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+              <span className="text-[--color-text-primary]">Centralized Hiring.</span>
               <br />
-              <span className="text-[--color-primary]">Decentralized</span> <span className="text-[--color-text-primary]">Trust.</span>-color-text-primary]">Trust.</span>
+              <span className="text-[--color-primary]">Decentralized</span> <span className="text-[--color-text-primary]">Trust.</span>
             </h1>
             
             <p className="text-xl text-[--color-text-primary]/70 mb-12 leading-relaxed max-w-3xl mx-auto">
@@ -340,10 +346,6 @@ const LandingPage = () => {
                 <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = 
                 '/for-employers'}>For Organizations</p>
                 <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = 
-                '/verify-credentials'}>Verify Credentials</p>
-              </div>
-            </div>
-            <div>:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = 
                 '/verify-credentials'}>Verify Credentials</p>
               </div>
             </div>
