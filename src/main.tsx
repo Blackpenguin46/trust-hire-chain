@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 
 // Function to handle user registration
 export const signUpUser = async (username, password, email) => {
