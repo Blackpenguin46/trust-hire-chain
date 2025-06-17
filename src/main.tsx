@@ -2,6 +2,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+import { initializeParse } from './services/back4app';
+initializeParse();
 import Parse from 'parse/dist/parse.min.js';
 
 // Function to handle user registration

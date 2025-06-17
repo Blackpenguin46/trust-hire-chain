@@ -2,10 +2,11 @@ import Parse from 'parse/dist/parse.min.js';
 
 export const initializeParse = () => {
   Parse.initialize(
-    process.env.REACT_APP_BACK4APP_APP_ID, 
-    process.env.REACT_APP_BACK4APP_JS_KEY  
-  );
-  Parse.serverURL = 'https://parseapi.back4app.com/';
+    Parse.initialize(
+  import.meta.env.VITE_BACK4APP_APP_ID,
+  import.meta.env.VITE_BACK4APP_JS_KEY
+);
+Parse.serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL;
 };
 
 // User Registration (Sign Up)
