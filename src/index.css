@@ -10,25 +10,26 @@
 @layer base {
   :root {
     /* Minimal professional palette */
-    --background: 13 17 23; /* #0D1117 */
-    --foreground: 237 238 242; /* #EDEEF2 */
-    --accent: 54 180 165; /* #36B4A5 */
-    --accent-hover: 42 164 150; /* Darker shade for hover */
-    --muted: 48 54 61; /* #303641 */
-    --border: 33 38 45; /* #21262D */
-    --card: 22 27 34; /* #161B22 */
-    
-    --primary: 54 180 165;
-    --primary-foreground: 13 17 23;
-    --secondary: 48 54 61;
-    --secondary-foreground: 237 238 242;
-    --muted: 48 54 61;
-    --muted-foreground: 139 148 158;
-    --destructive: 248 81 73;
-    --destructive-foreground: 255 255 255;
+    --color-primary: 54 180 165; /* #36B4A5 */
+    --color-secondary: 45 55 72; /* #2D3748 */
+    --color-background: 13 17 23; /* #0D1117 */
+    --color-text-primary: 255 255 255; /* #FFFFFF */
+    --color-text-secondary: 160 174 192; /* #A0AEC0 */
+    --color-accent: 79 209 199; /* #4FD1C7 */
+    --color-warning: 246 173 85; /* #F6AD55 */
+    --color-success: 104 211 145; /* #68D391 */
+
+    --primary: var(--color-primary);
+    --primary-foreground: var(--color-background);
+    --secondary: var(--color-secondary);
+    --secondary-foreground: var(--color-text-primary);
+    --muted: var(--color-secondary);
+    --muted-foreground: var(--color-text-secondary);
+    --destructive: var(--color-warning);
+    --destructive-foreground: var(--color-text-primary);
     --border: 33 38 45;
     --input: 33 38 45;
-    --ring: 54 180 165;
+    --ring: var(--color-primary);
     --radius: 8px;
   }
 }

@@ -18,6 +18,7 @@ import ForEmployers from "./pages/ForEmployers";
 import VerifyCredentials from "./pages/VerifyCredentials";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import PlatformSnippet from "./components/PlatformSnippet";
 
 const queryClient = new QueryClient();
 
