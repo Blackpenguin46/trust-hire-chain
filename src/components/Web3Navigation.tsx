@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Bell, User, LogOut, Menu, X } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Web3NavigationProps {
   userType?: 'seeker' | 'employer';
@@ -10,6 +10,7 @@ interface Web3NavigationProps {
 const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const { user, profile, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +22,11 @@ const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = '/';
+  };
 
   const navItems = [
     { label: 'How It Works', href: '/how-it-works' },
@@ -63,7 +69,7 @@ const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
 
             {/* Right Section */}
             <div className="flex items-center space-x-4">
-              {userType ? (
+              {user && profile ? (
                 <>
                   <Button variant="ghost" size="sm" className="relative text-[--color-text-primary]/70 hover:text-[--color-text-primary] hover:bg-[--border]">
                     <Bell className="h-4 w-4" />
@@ -75,11 +81,17 @@ const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
                   <Button variant="ghost" size="sm" className="text-[--color-text-primary]/70 hover:text-[--color-text-primary] hover:bg-[--border]">
                     <User className="h-4 w-4 mr-2" />
                     <span className="text-[#36B4A5] font-medium">
-                      {userType === 'seeker' ? 'John Doe' : 'Tech Corp'}
+                      {profile.user_role === 'job_seeker' ? profile.full_name : profile.company_name || profile.full_name}
                     </span>
                   </Button>
-                    <Button variant="ghost" size="sm" onClick={() => window.location.href = 
-                  '/auth'} className="text-[--color-text-primary]/70 hover:text-[--color-warning] hover:bg-[--color-warning]/10">                   <LogOut className="h-4 w-4" />
+                  
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleSignOut}
+                    className="text-[--color-text-primary]/70 hover:text-[--color-warning] hover:bg-[--color-warning]/10"
+                  >
+                    <LogOut className="h-4 w-4" />
                   </Button>
                 </>
               ) : (
@@ -125,7 +137,7 @@ const Web3Navigation: React.FC<Web3NavigationProps> = ({ userType }) => {
                     {item.label}
                   </a>
                 ))}
-                {!userType && (
+                {!user && (
                   <div className="px-2 pt-4 space-y-2">
                     <Button 
                       onClick={() => {
