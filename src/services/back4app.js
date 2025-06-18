@@ -1,11 +1,11 @@
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 
 export const initializeParse = () => {
   Parse.initialize(
-    import.meta.env.VITE_BACK4APP_APP_ID, 
-    import.meta.env.VITE_BACK4APP_JS_KEY  
+    import.meta.env.VITE_BACK4APP_APP_ID,
+    import.meta.env.VITE_BACK4APP_JS_KEY
   );
-  Parse.serverURL = 'https://parseapi.back4app.com/';
+  Parse.serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL;
 };
 
 // User Registration (Sign Up)
@@ -59,5 +59,3 @@ export const getCurrentUser = () => {
     return null;
   }
 };
-
-

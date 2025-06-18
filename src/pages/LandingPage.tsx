@@ -42,8 +42,13 @@ export function LandingPage() {
       role: "Talent Acquisition Lead",
       avatar: "/placeholder.svg", 
       credentials: ["HR Certification", "Blockchain Verified", "5+ Years Experience"],
+<<<<<<< HEAD
       quote: "Zero fake resumes, 100% verified talent pool."
     }
+=======
+      quote: "Zero fake resumes, 100% verified talent. TrustHire has revolutionized how we source and verify candidates."
+    },
+>>>>>>> b56f796f6323efeac8d9aaff538f1eb82896d1c8
   ];
 
   return (
@@ -135,7 +140,11 @@ export function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+<<<<<<< HEAD
             {features.map((feature) => (
+=======
+            {features.map((feature, index) => (
+>>>>>>> b56f796f6323efeac8d9aaff538f1eb82896d1c8
               <Card key={feature.title} className="professional-card hover:border-[--color-primary]/30 transition-all duration-300 group">
                 <CardHeader className="text-center pb-4">
                   <div className="w-16 h-16 bg-[--color-primary]/10 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-[--color-primary]/20 transition-colors">
@@ -164,7 +173,11 @@ export function LandingPage() {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+<<<<<<< HEAD
             {testimonials.map((testimonial) => (
+=======
+            {testimonials.map((testimonial, index) => (
+>>>>>>> b56f796f6323efeac8d9aaff538f1eb82896d1c8
               <div key={testimonial.name} className="professional-card p-8 hover:border-[--color-primary]/20 transition-all duration-300">
                 <div className="flex items-center space-x-4 mb-6">
                   <DIDAvatar 
@@ -210,7 +223,11 @@ export function LandingPage() {
                   { title: "Credential Minting", desc: "Transform achievements into verifiable credentials" },
                   { title: "Privacy Controls", desc: "Granular data sharing with zero-knowledge proofs" },
                   { title: "Reputation Building", desc: "Immutable track record across all platforms" }
+<<<<<<< HEAD
                 ].map((step) => (
+=======
+                ].map((step, index) => (
+>>>>>>> b56f796f6323efeac8d9aaff538f1eb82896d1c8
                   <div key={step.title} className="flex items-start space-x-4 p-6 professional-card hover:border-[--color-primary]/20 transition-all duration-300">
                     <div className="w-8 h-8 bg-[--color-primary] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                       <Check className="h-4 w-4 text-[--color-background]" />
@@ -246,7 +263,11 @@ export function LandingPage() {
                   { title: "Smart Contracts", desc: "Automated, transparent hiring processes" },
                   { title: "Credential Analysis", desc: "AI-powered verification of candidate claims" },
                   { title: "Compliance Automation", desc: "Built-in regulatory compliance and reporting" }
+<<<<<<< HEAD
                 ].map((step) => (
+=======
+                ].map((step, index) => (
+>>>>>>> b56f796f6323efeac8d9aaff538f1eb82896d1c8
                   <div key={step.title} className="flex items-start space-x-4 p-6 professional-card hover:border-[--color-primary]/20 transition-all duration-300">
                     <div className="w-8 h-8 bg-[--color-primary] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                       <Check className="h-4 w-4 text-[--color-background]" />
@@ -270,6 +291,103 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+<<<<<<< HEAD
+=======
+
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="professional-card p-12">
+              <div className="flex justify-center mb-8">
+                <div className="flex items-center space-x-6">
+                  <div className="w-12 h-12 bg-[--color-primary]/10 rounded-lg flex items-center justify-center">
+                    <Globe className="h-6 w-6 text-[--color-primary]" />
+                  </div>
+                  <div className="w-12 h-12 bg-[--color-primary]/10 rounded-lg flex items-center justify-center">
+                    <Shield className="h-6 w-6 text-[--color-primary]" />
+                  </div>
+                  <div className="w-12 h-12 bg-[--color-primary]/10 rounded-lg flex items-center justify-center">
+                    <Lock className="h-6 w-6 text-[--color-primary]" />
+                  </div>
+                </div>
+              </div>
+              <h2 className="text-4xl font-bold mb-6">
+                Join the Decentralized <span className="text-[--color-primary]">Workforce</span> Revolution
+              </h2>
+              <p className="text-xl text-[--color-text-secondary]/70 mb-10 leading-relaxed">
+                Where talent sovereignty meets organizational transparency. 
+                Built on blockchain, powered by community, secured by cryptography.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Button 
+                  size="lg" 
+                  className="primary-button text-xl px-12 py-6"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  Get Started
+                </Button>
+                <Button 
+                  size="lg" 
+                  className="secondary-button text-xl px-12 py-6"
+                  onClick={() => window.location.href = '/verify-credentials'}
+                >
+                  Learn More
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[--color-secondary]/50 py-16 border-t border-[--border]">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="font-bold text-2xl mb-4 text-[--color-text-primary]">
+                TrustHire <span className="text-[--color-primary]">Chain</span>
+              </div>
+              <p className="text-[--color-text-secondary]/60 mb-6 leading-relaxed">
+                The sovereign hiring protocol for the decentralized workforce
+              </p>
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-[--color-primary]/10 text-[--color-primary] text-sm font-medium">
+                Web3 Native
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-[--color-text-primary] mb-6">Protocol</h4>
+              <div className="space-y-3">
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/for-job-seekers'}>For Talent</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/for-employers'}>For Organizations</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/verify-credentials'}>Verify Credentials</p>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-[--color-text-primary] mb-6">Learn</h4>
+              <div className="space-y-3">
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/about'}>Mission</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/how-it-works'}>Architecture</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors" onClick={() => window.location.href = '/contact'}>Community</p>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-[--color-text-primary] mb-6">Ecosystem</h4>
+              <div className="space-y-3">
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors">Discord</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors">GitHub</p>
+                <p className="text-[--color-text-secondary]/60 hover:text-[--color-primary] cursor-pointer transition-colors">Documentation</p>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-[--border] mt-12 pt-8 text-center">
+            <p className="text-[--color-text-secondary]/60">
+              © 2024 TrustHire Chain Protocol. Empowering sovereign talent through decentralized trust.
+            </p>
+          </div>
+        </div>
+      </footer>
+>>>>>>> b56f796f6323efeac8d9aaff538f1eb82896d1c8
     </div>
   );
 }
