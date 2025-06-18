@@ -30,6 +30,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     }
   }, [user, loading, requiredRole])
 
+  console.log('ProtectedRoute', { loading, user, requiredRole });
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -42,7 +44,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   }
 
   if (!user) {
-    return null
+    // Show a visible message instead of returning null
+    return <div style={{ color: 'red', textAlign: 'center', marginTop: '2rem' }}>
+      Not logged in. Please <a href="/auth">log in</a>.
+    </div>
   }
 
   if (requiredRole) {
@@ -50,7 +55,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     const userRole = userType === 'seeker' ? 'job_seeker' : 'employer'
     
     if (userRole !== requiredRole) {
-      return null
+      return <div style={{ color: 'red', textAlign: 'center', marginTop: '2rem' }}>
+        You do not have permission to view this page.
+      </div>
     }
   }
 
