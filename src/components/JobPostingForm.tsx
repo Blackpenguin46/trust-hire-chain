@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from './ui/select';
 import { Job } from '../services/back4app';
-import Parse from '../services/back4app';
+import Parse from 'parse/dist/parse.min.js';
 import { toast } from 'sonner';
 
 const jobPostingSchema = z.object({
@@ -81,7 +81,7 @@ export function JobPostingForm() {
         toast.success(`Your ${data.tier} job posting payment was successful!`);
       }
 
-      await job.save(null, { useMasterKey: true });
+      await job.save();
       toast.success('Job posted successfully!');
       form.reset();
     } catch (error: any) {
