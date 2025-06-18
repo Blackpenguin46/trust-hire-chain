@@ -5,7 +5,13 @@
       "destination": "/index.html"
     }
   ],
-  "buildCommand": "bun run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite"
+  "framework": "vite",
+  "installCommand": "npm install",
+  "env": {
+    "VITE_BACK4APP_APP_ID": "@vite_back4app_app_id",
+    "VITE_BACK4APP_JS_KEY": "@vite_back4app_js_key",
+    "VITE_BACK4APP_SERVER_URL": "@vite_back4app_server_url"
+  }
 } 

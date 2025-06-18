@@ -1,7 +1,7 @@
-
 import React, { useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { UserRole } from '@/lib/supabase'
+
+type UserRole = 'job_seeker' | 'employer'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
-  const { user, profile, loading } = useAuth()
+  const { user, loading } = useAuth()
 
   useEffect(() => {
     if (!loading && !user) {
@@ -18,12 +18,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   }, [user, loading])
 
   useEffect(() => {
-    if (!loading && user && profile && requiredRole && profile.user_role !== requiredRole) {
-      // Redirect to appropriate dashboard based on user role
-      const redirectPath = profile.user_role === 'job_seeker' ? '/dashboard/seeker' : '/dashboard/employer'
-      window.location.href = redirectPath
+    if (!loading && user && requiredRole) {
+      const userType = user.get('userType')
+      const userRole = userType === 'seeker' ? 'job_seeker' : 'employer'
+      
+      if (userRole !== requiredRole) {
+        // Redirect to appropriate dashboard based on user role
+        const redirectPath = userRole === 'job_seeker' ? '/dashboard/seeker' : '/dashboard/employer'
+        window.location.href = redirectPath
+      }
     }
-  }, [user, profile, loading, requiredRole])
+  }, [user, loading, requiredRole])
 
   if (loading) {
     return (
@@ -36,12 +41,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     )
   }
 
-  if (!user || !profile) {
+  if (!user) {
     return null
   }
 
-  if (requiredRole && profile.user_role !== requiredRole) {
-    return null
+  if (requiredRole) {
+    const userType = user.get('userType')
+    const userRole = userType === 'seeker' ? 'job_seeker' : 'employer'
+    
+    if (userRole !== requiredRole) {
+      return null
+    }
   }
 
   return <>{children}</>

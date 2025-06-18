@@ -10,7 +10,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { signUpUser, loginUser } from '@/services/back4app';
 
 const signInSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -47,14 +46,14 @@ const Auth = () => {
     setError(null);
     
     try {
-      // Try Supabase first
-      const { error: supabaseError } = await signIn(data.email, data.password);
-      if (supabaseError) {
-        // If Supabase fails, try Back4App
-        const user = await loginUser(data.email, data.password);
-        if (user) {
-          // Redirect based on user type
-          const type = user.get('userType');
+      const { error } = await signIn(data.email, data.password);
+      if (error) {
+        setError(error.message || 'Sign in failed');
+      } else {
+        // Redirect based on user type
+        const currentUser = await import('@/services/back4app').then(m => m.getCurrentUser());
+        if (currentUser) {
+          const type = currentUser.get('userType');
           if (type === 'seeker') {
             window.location.href = '/dashboard/seeker';
           } else if (type === 'employer') {
@@ -74,27 +73,18 @@ const Auth = () => {
     setError(null);
     
     try {
-      // Try Supabase first
-      const { error: supabaseError } = await signUp(
+      const { error } = await signUp(
         data.email,
         data.password,
         data.email,
         userType === 'job_seeker' ? 'seeker' : 'employer',
         userType === 'employer' ? data.company_name : undefined
       );
-      if (supabaseError) {
-        // If Supabase fails, try Back4App
-        const user = await signUpUser(data.email, data.password, data.email);
-        if (user) {
-          user.set('userType', userType === 'job_seeker' ? 'seeker' : 'employer');
-          if (userType === 'employer' && data.company_name) {
-            user.set('companyName', data.company_name);
-          }
-          await user.save();
-          setError('Account created successfully! Please sign in.');
-        }
+      
+      if (error) {
+        setError(error.message || 'Sign up failed');
       } else {
-        setError('Check your email for a confirmation link!');
+        setError('Account created successfully! Please sign in.');
       }
     } catch (err: any) {
       setError(err.message);
