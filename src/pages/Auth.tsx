@@ -1,156 +1,181 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Sparkles, Shield } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import Web3Navigation from '@/components/Web3Navigation';
+import { useToast } from '@/components/ui/use-toast';
+
+// Import authentication functions from your Back4app service
+import { signUpUser, loginUser, getCurrentUser } from '@/services/back4app';
 
 const Auth = () => {
-  const [userType, setUserType] = useState<'seeker' | 'employer'>('seeker');
   const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState<'seeker' | 'employer'>('seeker'); // State for user type
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if a user is already logged in when the component mounts
+    const checkCurrentUser = async () => {
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        // Redirect based on user type if already logged in
+        const type = currentUser.get('userType');
+        if (type === 'seeker') {
+          navigate('/dashboard/seeker');
+        } else if (type === 'employer') {
+          navigate('/dashboard/employer');
+        }
+      }
+    };
+    checkCurrentUser();
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      if (isLogin) {
+        // Handle Login
+        const user = await loginUser(username, password);
+        toast({
+          title: 'Login Successful!',
+          description: `Welcome back, ${user.get('username')}.`,
+        });
+        // Redirect based on user type after successful login
+        const type = user.get('userType');
+        if (type === 'seeker') {
+          navigate('/dashboard/seeker');
+        } else if (type === 'employer') {
+          navigate('/dashboard/employer');
+        }
+      } else {
+        // Handle Sign Up
+        const user = await signUpUser(username, password, email);
+        // Set user type after successful sign up
+        user.set('userType', userType); 
+        await user.save(); // Save the user object with the new userType
+
+        toast({
+          title: 'Sign Up Successful!',
+          description: `Welcome to Trust Hire Chain, ${user.get('username')}.`,
+        });
+        // Redirect based on user type after successful sign up
+        if (userType === 'seeker') {
+          navigate('/dashboard/seeker');
+        } else if (userType === 'employer') {
+          navigate('/dashboard/employer');
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Authentication Failed',
+        description: error.message || 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+      console.error('Authentication error:', error);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse opacity-60"></div>
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-purple-400 rounded-full animate-pulse opacity-40"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-3 h-3 bg-cyan-400 rounded-full animate-pulse opacity-30"></div>
-      </div>
-
-      <Card className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/20 shadow-2xl">
-        <CardHeader className="text-center space-y-4">
-          <div className="relative mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur-lg opacity-30"></div>
-            <CardTitle className="relative text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              TrustHire Chain
+    <div className="min-h-screen bg-[--color-background] text-[--color-text-primary]">
+      <Web3Navigation />
+      <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-8">
+        <Card className="w-full max-w-md professional-card">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold text-[--color-text-primary]">
+              {isLogin ? 'Sign In' : 'Sign Up'}
             </CardTitle>
-          </div>
-          <CardDescription className="text-gray-300 text-lg">
-            Blockchain-powered hiring platform
-          </CardDescription>
-          <Badge className="mx-auto bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30 backdrop-blur-sm animate-pulse">
-            <Shield className="w-3 h-3 mr-1" />
-            Decentralized Identity Powered
-          </Badge>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          <Tabs value={userType} onValueChange={(value) => setUserType(value as 'seeker' | 'employer')}>
-            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm border border-white/20">
-              <TabsTrigger 
-                value="seeker" 
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white text-gray-300"
-              >
-                Job Seeker
-              </TabsTrigger>
-              <TabsTrigger 
-                value="employer"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 data-[state=active]:text-white text-gray-300"
-              >
-                Employer
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="seeker" className="space-y-4 mt-6">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="your@email.com" 
-                  className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-300">Password</Label>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-blue-400 focus:ring-blue-400/20"
+            <CardDescription className="text-[--color-text-secondary]/70">
+              {isLogin ? 'Enter your credentials to access your account' : 'Create your account to get started'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="yourusername"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
                 />
               </div>
               {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-gray-300">Full Name</Label>
-                  <Input 
-                    id="fullName" 
-                    placeholder="John Doe" 
-                    className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
               )}
-              <Button 
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
-                onClick={() => window.location.href = '/dashboard/seeker'}
-              >
-                {isLogin ? 'Sign In' : 'Create Account'}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </TabsContent>
-
-            <TabsContent value="employer" className="space-y-4 mt-6">
-              <div className="space-y-2">
-                <Label htmlFor="companyEmail" className="text-gray-300">Company Email</Label>
-                <Input 
-                  id="companyEmail" 
-                  type="email" 
-                  placeholder="hr@company.com" 
-                  className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/20"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="companyPassword" className="text-gray-300">Password</Label>
-                <Input 
-                  id="companyPassword" 
-                  type="password" 
-                  className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-green-400 focus:ring-green-400/20"
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
               {!isLogin && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="companyName" className="text-gray-300">Company Name</Label>
-                    <Input 
-                      id="companyName" 
-                      placeholder="Tech Corp Inc." 
-                      className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/20"
-                    />
+                <div>
+                  <Label>Account Type</Label>
+                  <div className="flex space-x-4 mt-2">
+                    <Button
+                      type="button"
+                      variant={userType === 'seeker' ? 'default' : 'outline'}
+                      onClick={() => setUserType('seeker')}
+                      className="flex-1"
+                    >
+                      Job Seeker
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={userType === 'employer' ? 'default' : 'outline'}
+                      onClick={() => setUserType('employer')}
+                      className="flex-1"
+                    >
+                      Employer
+                    </Button>
                   </div>
-                  <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm p-4 rounded-lg text-sm border border-blue-400/30">
-                    <p className="text-blue-300 flex items-center">
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      Company verification required for full access
-                    </p>
-                  </div>
-                </>
+                </div>
               )}
-              <Button 
-                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
-                onClick={() => window.location.href = '/dashboard/employer'}
-              >
-                {isLogin ? 'Sign In' : 'Register Company'}
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button type="submit" className="w-full primary-button">
+                {isLogin ? 'Sign In' : 'Sign Up'}
               </Button>
-            </TabsContent>
-          </Tabs>
-
-          <div className="mt-6 text-center">
-            <Button 
-              variant="link" 
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
-            >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+            </form>
+            <div className="mt-6 text-center text-sm text-[--color-text-secondary]/70">
+              {isLogin ? 'Don\'t have an account?' : 'Already have an account?'}{' '}
+              <Button
+                variant="link"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-[--color-primary] p-0 h-auto"
+              >
+                {isLogin ? 'Sign Up' : 'Sign In'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
 
 export default Auth;
+
+
