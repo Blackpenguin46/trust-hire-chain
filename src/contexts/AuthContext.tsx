@@ -1,10 +1,6 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import {
-  signUpUser,
-  loginUser,
-  logoutUser,
-  getCurrentUser,
-} from '@/services/back4app'
+import { initializeParse, signUpUser, loginUser, logoutUser, getCurrentUser } from '@/services/back4app'
 
 interface AuthContextType {
   user: any | null
@@ -29,10 +25,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check for current user on mount
-    const currentUser = getCurrentUser()
-    setUser(currentUser)
-    setLoading(false)
+    const initializeAuth = async () => {
+      try {
+        // Initialize Parse first
+        const initialized = initializeParse()
+        if (initialized) {
+          // Check for current user only after Parse is initialized
+          const currentUser = getCurrentUser()
+          setUser(currentUser)
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    initializeAuth()
   }, [])
 
   const signUp = async (
