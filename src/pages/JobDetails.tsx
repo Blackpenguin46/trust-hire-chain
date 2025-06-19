@@ -1,314 +1,328 @@
-import { useEffect, useState } from 'react';
+
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Job } from '../services/back4app';
-import Parse from '../services/back4app';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
-import { Textarea } from '../components/ui/textarea';
-import { Label } from '../components/ui/label';
-import { Input } from '../components/ui/input';
-import { Loader2, ArrowLeft, Calendar, MapPin, Briefcase, DollarSign, Upload, FileText } from 'lucide-react';
-import { toast } from 'sonner';
-import { authService } from '../services/auth';
-import { blockchainService } from '../services/blockchain';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { 
+  MapPin, 
+  DollarSign, 
+  Calendar, 
+  Building, 
+  Clock, 
+  Users, 
+  ArrowLeft,
+  Send,
+  Upload
+} from 'lucide-react';
+import Navigation from '@/components/Navigation';
+import { useToast } from '@/hooks/use-toast';
 
-export function JobDetails() {
-  const { id } = useParams<{ id: string }>();
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  salary: string;
+  type: string;
+  description: string;
+  requirements: string[];
+  benefits: string[];
+  postedDate: string;
+  applicationDeadline: string;
+  applicants: number;
+}
+
+export const JobDetails = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [job, setJob] = useState<Job | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
-  const [coverLetter, setCoverLetter] = useState('');
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [employerReputation, setEmployerReputation] = useState<number | null>(null);
+  const { toast } = useToast();
+  const [isApplying, setIsApplying] = useState(false);
 
-  useEffect(() => {
-    fetchJobDetails();
-  }, [id]);
+  // Sample job data - in a real app, this would be fetched based on the ID
+  const job: Job = {
+    id: id || '1',
+    title: "Senior Frontend Developer",
+    company: "TechCorp Solutions",
+    location: "San Francisco, CA (Remote)",
+    salary: "$90,000 - $130,000",
+    type: "Full-time",
+    description: `We are looking for a Senior Frontend Developer to join our dynamic team. You will be responsible for building and maintaining user-facing web applications using modern JavaScript frameworks and libraries.
 
-  const fetchJobDetails = async () => {
-    try {
-      setLoading(true);
-      const query = new Parse.Query(Job);
-      const jobDetails = await query.get(id!);
-      setJob(jobDetails);
-
-      // Fetch employer's reputation score if they have a wallet address
-      const employer = jobDetails.get('employer');
-      const employerWalletAddress = employer.get('walletAddress');
-      if (employerWalletAddress) {
-        try {
-          const score = await blockchainService.getReputationScore(employerWalletAddress);
-          setEmployerReputation(score);
-        } catch (error) {
-          console.error('Error fetching employer reputation:', error);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching job details:', error);
-      toast.error('Failed to load job details');
-      navigate('/jobs');
-    } finally {
-      setLoading(false);
-    }
+This role offers the opportunity to work on cutting-edge projects with a talented team of developers, designers, and product managers. You'll have the chance to influence technical decisions and mentor junior developers while working in a collaborative, agile environment.`,
+    requirements: [
+      "5+ years of experience in frontend development",
+      "Expert knowledge of React, TypeScript, and modern JavaScript",
+      "Experience with state management libraries (Redux, Zustand, etc.)",
+      "Strong understanding of HTML5, CSS3, and responsive design",
+      "Experience with testing frameworks (Jest, React Testing Library)",
+      "Familiarity with build tools and bundlers (Webpack, Vite)",
+      "Knowledge of version control systems (Git)",
+      "Strong problem-solving and communication skills"
+    ],
+    benefits: [
+      "Competitive salary and equity package",
+      "Comprehensive health, dental, and vision insurance",
+      "Flexible working hours and remote work options",
+      "Professional development budget ($2,000/year)",
+      "Generous PTO and paid holidays",
+      "401(k) matching up to 4%",
+      "Modern equipment and home office setup allowance",
+      "Team building events and company retreats"
+    ],
+    postedDate: "2024-01-15",
+    applicationDeadline: "2024-02-15",
+    applicants: 24
   };
 
-  const handleApply = async () => {
-    if (!authService.isAuthenticated()) {
-      toast.error('You must be logged in to apply for jobs');
-      navigate('/auth');
-      return;
-    }
-
-    setIsApplyDialogOpen(true);
+  const handleApply = async (formData: FormData) => {
+    setIsApplying(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsApplying(false);
+    toast({
+      title: "Application Submitted!",
+      description: "Your application has been sent successfully. We'll be in touch soon.",
+    });
   };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        toast.error('Resume file size must be less than 5MB');
-        return;
-      }
-      if (!file.type.includes('pdf') && !file.type.includes('doc') && !file.type.includes('docx')) {
-        toast.error('Please upload a PDF or Word document');
-        return;
-      }
-      setResumeFile(file);
-    }
-  };
-
-  const handleSubmitApplication = async () => {
-    if (!job || !coverLetter.trim()) {
-      toast.error('Please provide a cover letter');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const currentUser = Parse.User.current();
-      if (!currentUser) {
-        throw new Error('You must be logged in to apply for jobs');
-      }
-
-      // Create application object
-      const Application = Parse.Object.extend('Application');
-      const application = new Application();
-
-      application.set('jobPosting', job);
-      application.set('jobSeeker', currentUser);
-      application.set('status', 'Pending');
-      application.set('coverLetter', coverLetter);
-
-      // Upload resume if provided
-      if (resumeFile) {
-        const parseFile = new Parse.File(resumeFile.name, resumeFile);
-        await parseFile.save();
-        application.set('resume', parseFile);
-      }
-
-      // Save application to Back4App
-      await application.save();
-
-      // Submit application to blockchain if job is verified
-      if (job.get('isVerified')) {
-        await blockchainService.applyForJob(parseInt(job.id));
-      }
-
-      toast.success('Application submitted successfully!');
-      setIsApplyDialogOpen(false);
-      setCoverLetter('');
-      setResumeFile(null);
-    } catch (error: any) {
-      console.error('Error submitting application:', error);
-      toast.error(error.message || 'Failed to submit application');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (!job) {
-    return null;
-  }
 
   return (
-    <div className="container py-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      
+      <div className="container mx-auto px-6 py-8">
         <Button
           variant="ghost"
-          className="mb-8"
-          onClick={() => navigate('/jobs')}
+          onClick={() => navigate(-1)}
+          className="mb-6 flex items-center gap-2"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="h-4 w-4" />
           Back to Jobs
         </Button>
 
-        <div className="space-y-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold">{job.title}</h1>
-              <div className="flex items-center gap-4 mt-2 text-muted-foreground">
-                <div className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  {job.location}
-                </div>
-                <div className="flex items-center">
-                  <Briefcase className="h-4 w-4 mr-1" />
-                  {job.employmentType}
-                </div>
-                <div className="flex items-center">
-                  <DollarSign className="h-4 w-4 mr-1" />
-                  {job.salaryRange}
-                </div>
-                <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-1" />
-                  Posted {new Date(job.createdAt).toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {job.isFeatured && (
-                <Badge variant="secondary">Featured</Badge>
-              )}
-              {job.isVerified && (
-                <Badge variant="default">Verified</Badge>
-              )}
-            </div>
-          </div>
-
-          {employerReputation !== null && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Employer Reputation</CardTitle>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-2xl font-bold">{job.title}</CardTitle>
+                    <CardDescription className="text-lg flex items-center gap-2 mt-2">
+                      <Building className="h-4 w-4" />
+                      {job.company}
+                    </CardDescription>
+                  </div>
+                  <Badge variant="secondary">{job.type}</Badge>
+                </div>
+                
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mt-4">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    {job.location}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <DollarSign className="h-4 w-4" />
+                    {job.salary}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    Posted {job.postedDate}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    {job.applicants} applicants
+                  </span>
+                </div>
+              </CardHeader>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Job Description</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">
-                    Score: {employerReputation}
-                  </Badge>
+                <div className="prose prose-gray max-w-none">
+                  {job.description.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="mb-4 last:mb-0">
+                      {paragraph}
+                    </p>
+                  ))}
                 </div>
               </CardContent>
             </Card>
-          )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Job Description</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose max-w-none">
-                <p className="whitespace-pre-wrap">{job.description}</p>
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Requirements</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {job.requirements.map((requirement, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 flex-shrink-0" />
+                      {requirement}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Required Skills</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {job.requiredSkills.map((skill) => (
-                  <Badge key={skill} variant="outline">
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Benefits & Perks</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {job.benefits.map((benefit, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 flex-shrink-0" />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Application Deadline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                {new Date(job.applicationDeadline).toLocaleDateString()}
-              </p>
-            </CardContent>
-          </Card>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Apply for this Position</CardTitle>
+                <CardDescription>
+                  Join our team and make an impact
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Clock className="h-4 w-4" />
+                  Application deadline: {job.applicationDeadline}
+                </div>
+                
+                <Separator />
+                
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="w-full flex items-center gap-2">
+                      <Send className="h-4 w-4" />
+                      Apply Now
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Apply for {job.title}</DialogTitle>
+                      <DialogDescription>
+                        Fill out the form below to submit your application
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form 
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.currentTarget);
+                        handleApply(formData);
+                      }}
+                      className="space-y-4 mt-4"
+                    >
+                      <div className="space-y-2">
+                        <Label htmlFor="coverLetter">Cover Letter</Label>
+                        <Textarea
+                          id="coverLetter"
+                          name="coverLetter"
+                          placeholder="Tell us why you're interested in this position..."
+                          className="min-h-[100px]"
+                          required
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="resume">Resume</Label>
+                        <Input
+                          id="resume"
+                          name="resume"
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          required
+                        />
+                      </div>
+                      
+                      <Button 
+                        type="submit" 
+                        className="w-full" 
+                        disabled={isApplying}
+                      >
+                        {isApplying ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4 mr-2" />
+                            Submit Application
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
 
-          <div className="flex justify-end">
-            <Button size="lg" onClick={handleApply}>
-              Apply Now
-            </Button>
+            <Card>
+              <CardHeader>
+                <CardTitle>Company Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-medium">{job.company}</h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      A leading technology company focused on building innovative solutions 
+                      for the modern workplace.
+                    </p>
+                  </div>
+                  <Separator />
+                  <div className="text-sm text-gray-600">
+                    <p>Industry: Technology</p>
+                    <p>Company Size: 50-200 employees</p>
+                    <p>Founded: 2018</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Similar Jobs</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="p-3 border rounded cursor-pointer hover:bg-gray-50">
+                    <h4 className="font-medium text-sm">Frontend Developer</h4>
+                    <p className="text-xs text-gray-600">StartupXYZ • Remote</p>
+                  </div>
+                  <div className="p-3 border rounded cursor-pointer hover:bg-gray-50">
+                    <h4 className="font-medium text-sm">React Developer</h4>
+                    <p className="text-xs text-gray-600">TechFlow • New York</p>
+                  </div>
+                  <div className="p-3 border rounded cursor-pointer hover:bg-gray-50">
+                    <h4 className="font-medium text-sm">Full Stack Engineer</h4>
+                    <p className="text-xs text-gray-600">DevCorp • San Francisco</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
-
-      <Dialog open={isApplyDialogOpen} onOpenChange={setIsApplyDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Apply for {job.title}</DialogTitle>
-            <DialogDescription>
-              Please provide your cover letter and resume to complete your application.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="coverLetter">Cover Letter</Label>
-              <Textarea
-                id="coverLetter"
-                placeholder="Explain why you're a good fit for this position..."
-                value={coverLetter}
-                onChange={(e) => setCoverLetter(e.target.value)}
-                className="min-h-[200px]"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="resume">Resume (PDF or Word)</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="resume"
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={handleFileChange}
-                  className="flex-1"
-                />
-                {resumeFile && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <FileText className="h-4 w-4" />
-                    {resumeFile.name}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsApplyDialogOpen(false)}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSubmitApplication}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                'Submit Application'
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
-} 
+};
