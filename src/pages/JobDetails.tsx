@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -325,10 +324,6 @@ This role offers the opportunity to work on cutting-edge projects with a talente
       </div>
     </div>
   );
-<<<<<<< HEAD
 }
 
-export default JobDetails; 
-=======
-};
->>>>>>> 1c7fb8b1e8b240f30edde2e7822dc9487cc15a9a
+export default JobDetails;
