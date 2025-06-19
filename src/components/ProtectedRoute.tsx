@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 type UserRole = 'job_seeker' | 'employer'
 
@@ -11,28 +11,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
   const { user, loading } = useAuth()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/auth', { replace: true })
-    }
-  }, [user, loading, navigate])
-
-  useEffect(() => {
-    if (!loading && user && requiredRole) {
-      const userType = user.get('userType')
-      const userRole = userType === 'seeker' ? 'job_seeker' : 'employer'
-      
-      if (userRole !== requiredRole) {
-        // Redirect to appropriate dashboard based on user role
-        const redirectPath = userRole === 'job_seeker' ? '/dashboard/seeker' : '/dashboard/employer'
-        navigate(redirectPath, { replace: true })
-      }
-    }
-  }, [user, loading, requiredRole, navigate])
-
-  console.log('ProtectedRoute', { loading, user, requiredRole });
+  const location = useLocation()
 
   if (loading) {
     return (
@@ -46,20 +25,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   }
 
   if (!user) {
-    // Show a visible message instead of returning null
-    return <div style={{ color: 'red', textAlign: 'center', marginTop: '2rem' }}>
-      Not logged in. Please <a href="/auth">log in</a>.
-    </div>
+    // Redirect to /auth, preserving the current location for after login
+    return <Navigate to="/auth" state={{ from: location }} replace />
   }
 
   if (requiredRole) {
     const userType = user.get('userType')
     const userRole = userType === 'seeker' ? 'job_seeker' : 'employer'
-    
     if (userRole !== requiredRole) {
-      return <div style={{ color: 'red', textAlign: 'center', marginTop: '2rem' }}>
-        You do not have permission to view this page.
-      </div>
+      // Redirect to the correct dashboard
+      const redirectPath = userRole === 'job_seeker' ? '/dashboard/seeker' : '/dashboard/employer'
+      return <Navigate to={redirectPath} replace />
     }
   }
 
