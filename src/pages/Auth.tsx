@@ -31,7 +31,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, initialized } = useAuth();
 
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
@@ -40,6 +40,24 @@ const Auth = () => {
   const signUpForm = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
   });
+
+  // Show initialization status
+  if (!initialized) {
+    return (
+      <div className="min-h-screen bg-[--color-background] text-[--color-text-primary] flex items-center justify-center">
+        <Card className="w-full max-w-md professional-card">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-red-400">
+              Backend Connection Issue
+            </CardTitle>
+            <CardDescription className="text-gray-300">
+              Unable to connect to Back4App backend. Please check your environment variables.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
 
   const handleSignIn = async (data: SignInData) => {
     setLoading(true);
@@ -108,6 +126,9 @@ const Auth = () => {
               <Badge className="mx-auto bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30 backdrop-blur-sm animate-pulse">
                 <Shield className="w-3 h-3 mr-1" />
                 Decentralized Identity Powered
+              </Badge>
+              <Badge className="mx-auto bg-green-500/20 text-green-300 border border-green-400/30">
+                Backend Connected ✓
               </Badge>
             </div>
           </CardHeader>
@@ -310,5 +331,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
-

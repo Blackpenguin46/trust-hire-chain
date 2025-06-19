@@ -13,14 +13,21 @@ export const initializeParse = () => {
   const serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL;
 
   if (!appId || !jsKey || !serverURL) {
-    console.warn('Back4App environment variables are not configured. Some features may not work.');
+    console.error('Back4App environment variables are missing:', {
+      appId: !!appId,
+      jsKey: !!jsKey,
+      serverURL: !!serverURL
+    });
     return false;
   }
 
   try {
     Parse.initialize(appId, jsKey);
     Parse.serverURL = serverURL;
-    console.log('Back4App initialized successfully');
+    console.log('Back4App initialized successfully with:', {
+      appId: appId.substring(0, 8) + '...',
+      serverURL
+    });
     return true;
   } catch (error) {
     console.error('Failed to initialize Back4App:', error);

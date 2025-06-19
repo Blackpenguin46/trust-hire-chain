@@ -5,6 +5,7 @@ import { initializeParse, signUpUser, loginUser, logoutUser, getCurrentUser } fr
 interface AuthContextType {
   user: any | null
   loading: boolean
+  initialized: boolean
   signUp: (username: string, password: string, email: string, userType?: string, companyName?: string) => Promise<any>
   signIn: (username: string, password: string) => Promise<any>
   signOut: () => Promise<void>
@@ -23,19 +24,26 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
+  const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         // Initialize Parse first
-        const initialized = initializeParse()
-        if (initialized) {
+        const parseInitialized = initializeParse()
+        setInitialized(parseInitialized)
+        
+        if (parseInitialized) {
           // Check for current user only after Parse is initialized
           const currentUser = getCurrentUser()
           setUser(currentUser)
+          console.log('Auth initialization complete. Current user:', currentUser ? 'Found' : 'None')
+        } else {
+          console.warn('Parse initialization failed - app will work with limited functionality')
         }
       } catch (error) {
         console.error('Error initializing auth:', error)
+        setInitialized(false)
       } finally {
         setLoading(false)
       }
@@ -96,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const value = {
     user,
     loading,
+    initialized,
     signUp,
     signIn,
     signOut,
