@@ -14,4 +14,6 @@ export function Jobs() {
       </div>
     </div>
   );
-} 
+}
+
+export default Jobs; 

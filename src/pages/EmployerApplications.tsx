@@ -14,4 +14,6 @@ export function EmployerApplications() {
       </div>
     </div>
   );
-} 
+}
+
+export default EmployerApplications; 

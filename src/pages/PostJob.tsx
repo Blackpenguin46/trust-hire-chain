@@ -11,4 +11,6 @@ export function PostJob() {
       </div>
     </div>
   );
-} 
+}
+
+export default PostJob; 

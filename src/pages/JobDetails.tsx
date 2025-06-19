@@ -311,4 +311,6 @@ export function JobDetails() {
       </Dialog>
     </div>
   );
-} 
+}
+
+export default JobDetails; 
