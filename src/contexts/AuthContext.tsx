@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { initializeParse, signUpUser, loginUser, logoutUser, getCurrentUser } from '@/services/back4app'
 
@@ -61,17 +60,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   ) => {
     setLoading(true)
     try {
+      console.log('Starting sign up process for:', username)
       const user = await signUpUser(username, password, email)
+      
+      // Set additional user properties
       if (userType) {
         user.set('userType', userType)
       }
       if (companyName) {
         user.set('companyName', companyName)
       }
-      await user.save()
+      
+      // Save additional properties
+      try {
+        await user.save()
+        console.log('User additional properties saved successfully')
+      } catch (saveError) {
+        console.warn('Could not save additional user properties:', saveError)
+        // Don't fail the signup if we can't save additional properties
+      }
+      
       setUser(user)
       return { user, error: null }
     } catch (error: any) {
+      console.error('Sign up failed:', error)
       return { user: null, error }
     } finally {
       setLoading(false)

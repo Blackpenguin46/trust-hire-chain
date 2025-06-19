@@ -1,4 +1,3 @@
-
 import Parse from 'parse/dist/parse.min.js';
 
 // Ensure Parse is properly initialized for browser environment
@@ -24,6 +23,10 @@ export const initializeParse = () => {
   try {
     Parse.initialize(appId, jsKey);
     Parse.serverURL = serverURL;
+    
+    // Enable automatic user creation
+    Parse.User.enableUnsafeCurrentUser();
+    
     console.log('Back4App initialized successfully with:', {
       appId: appId.substring(0, 8) + '...',
       serverURL
@@ -47,11 +50,22 @@ export const signUpUser = async (username: string, password: string, email: stri
   user.set("email", email);
 
   try {
+    console.log('Attempting to sign up user:', username);
     await user.signUp();
     console.log("User signed up successfully!", user);
     return user;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error during sign up:", error);
+    
+    // Handle specific Back4App error cases
+    if (error.code === 202) {
+      throw new Error('Username already taken. Please choose a different username.');
+    } else if (error.code === 203) {
+      throw new Error('Email already in use. Please use a different email address.');
+    } else if (error.message === 'unauthorized') {
+      throw new Error('User registration is currently disabled. Please contact support.');
+    }
+    
     throw error;
   }
 };
