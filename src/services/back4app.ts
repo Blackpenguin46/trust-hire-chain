@@ -1,3 +1,4 @@
+
 import Parse from 'parse/dist/parse.min.js';
 
 export const initializeParse = () => {
@@ -216,4 +217,4 @@ export class Job extends Parse.Object {
 // Register the Job class
 Parse.Object.registerSubclass('Job', Job);
 
-export default Parse; 
+export default Parse;
