@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LandingPage } from "./pages/LandingPage";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,7 @@ export default function App() {
             <Sonner />
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<div style={{ color: 'lime', fontSize: 32 }}>LANDING ROUTE</div>} />
+                <Route path="/" element={<LandingPage />} />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
