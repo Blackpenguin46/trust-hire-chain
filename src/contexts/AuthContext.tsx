@@ -1,14 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import {
-  signUpUser,
-  loginUser,
-  logoutUser,
-  getCurrentUser,
-} from '@/services/back4app'
+import { initializeParse, signUpUser, loginUser, logoutUser, getCurrentUser } from '@/services/back4app'
 
 interface AuthContextType {
   user: any | null
   loading: boolean
+  initialized: boolean
   signUp: (username: string, password: string, email: string, userType?: string, companyName?: string) => Promise<any>
   signIn: (username: string, password: string) => Promise<any>
   signOut: () => Promise<void>
@@ -27,12 +23,32 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
+  const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
-    // Check for current user on mount
-    const currentUser = getCurrentUser()
-    setUser(currentUser)
-    setLoading(false)
+    const initializeAuth = async () => {
+      try {
+        // Initialize Parse first
+        const parseInitialized = initializeParse()
+        setInitialized(parseInitialized)
+        
+        if (parseInitialized) {
+          // Check for current user only after Parse is initialized
+          const currentUser = getCurrentUser()
+          setUser(currentUser)
+          console.log('Auth initialization complete. Current user:', currentUser ? 'Found' : 'None')
+        } else {
+          console.warn('Parse initialization failed - app will work with limited functionality')
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error)
+        setInitialized(false)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    initializeAuth()
   }, [])
 
   const signUp = async (
@@ -44,17 +60,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   ) => {
     setLoading(true)
     try {
+      console.log('Starting sign up process for:', username)
       const user = await signUpUser(username, password, email)
+      
+      // Set additional user properties
       if (userType) {
         user.set('userType', userType)
       }
       if (companyName) {
         user.set('companyName', companyName)
       }
-      await user.save()
+      
+      // Save additional properties
+      try {
+        await user.save()
+        console.log('User additional properties saved successfully')
+      } catch (saveError) {
+        console.warn('Could not save additional user properties:', saveError)
+        // Don't fail the signup if we can't save additional properties
+      }
+      
       setUser(user)
       return { user, error: null }
     } catch (error: any) {
+      console.error('Sign up failed:', error)
       return { user: null, error }
     } finally {
       setLoading(false)
@@ -87,6 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const value = {
     user,
     loading,
+    initialized,
     signUp,
     signIn,
     signOut,

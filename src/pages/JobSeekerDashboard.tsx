@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Parse from 'parse';
+import Parse from '../services/back4app';
 import { useToast } from '@/components/ui/use-toast';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -485,5 +485,3 @@ const EmployerReputationDisplay = ({ employerDID, reputationContract }: { employ
 };
 
 export default JobSeekerDashboard;
-
-

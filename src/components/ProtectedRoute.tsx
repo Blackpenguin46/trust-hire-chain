@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Navigate, useLocation } from 'react-router-dom'
@@ -29,7 +30,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     return <Navigate to="/auth" state={{ from: location }} replace />
   }
 
-  if (requiredRole) {
+  if (requiredRole && user) {
     const userType = user.get('userType')
     const userRole = userType === 'seeker' ? 'job_seeker' : 'employer'
     if (userRole !== requiredRole) {
