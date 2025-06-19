@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 type UserRole = 'job_seeker' | 'employer'
 
@@ -10,12 +11,13 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
   const { user, loading } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!loading && !user) {
-      window.location.href = '/auth'
+      navigate('/auth', { replace: true })
     }
-  }, [user, loading])
+  }, [user, loading, navigate])
 
   useEffect(() => {
     if (!loading && user && requiredRole) {
@@ -25,10 +27,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
       if (userRole !== requiredRole) {
         // Redirect to appropriate dashboard based on user role
         const redirectPath = userRole === 'job_seeker' ? '/dashboard/seeker' : '/dashboard/employer'
-        window.location.href = redirectPath
+        navigate(redirectPath, { replace: true })
       }
     }
-  }, [user, loading, requiredRole])
+  }, [user, loading, requiredRole, navigate])
 
   console.log('ProtectedRoute', { loading, user, requiredRole });
 
