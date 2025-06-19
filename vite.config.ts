@@ -20,8 +20,15 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     global: 'globalThis',
+    'process.env': {},
   },
   optimizeDeps: {
     include: ['parse/dist/parse.min.js'],
+    exclude: ['parse'],
+  },
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
 }));

@@ -1,6 +1,12 @@
 
 import Parse from 'parse/dist/parse.min.js';
 
+// Ensure Parse is properly initialized for browser environment
+if (typeof window !== 'undefined') {
+  // Set up any browser-specific configurations
+  (window as any).Parse = Parse;
+}
+
 export const initializeParse = () => {
   const appId = import.meta.env.VITE_BACK4APP_APP_ID;
   const jsKey = import.meta.env.VITE_BACK4APP_JS_KEY;
