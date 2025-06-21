@@ -1,4 +1,3 @@
-
 import Parse from 'parse/dist/parse.min.js';
 
 // Ensure Parse is properly initialized for browser environment
@@ -8,18 +7,16 @@ if (typeof window !== 'undefined') {
 }
 
 export const initializeParse = () => {
-  const appId = import.meta.env.VITE_BACK4APP_APP_ID;
-  const jsKey = import.meta.env.VITE_BACK4APP_JS_KEY;
-  const serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL;
+  // Use fallback values if environment variables are not available
+  const appId = import.meta.env.VITE_BACK4APP_APP_ID || '2IRWN8rmJxc43OSfiWKRKQYmnIyFwRPHycYqtLlW';
+  const jsKey = import.meta.env.VITE_BACK4APP_JS_KEY || 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT';
+  const serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL || 'https://parseapi.back4app.com';
 
-  if (!appId || !jsKey || !serverURL) {
-    console.error('Back4App environment variables are missing:', {
-      appId: !!appId,
-      jsKey: !!jsKey,
-      serverURL: !!serverURL
-    });
-    return false;
-  }
+  console.log('Initializing Parse with:', {
+    appId: appId.substring(0, 8) + '...',
+    jsKey: jsKey.substring(0, 8) + '...',
+    serverURL
+  });
 
   try {
     Parse.initialize(appId, jsKey);
@@ -28,10 +25,7 @@ export const initializeParse = () => {
     // Enable automatic user creation
     Parse.User.enableUnsafeCurrentUser();
     
-    console.log('Back4App initialized successfully with:', {
-      appId: appId.substring(0, 8) + '...',
-      serverURL
-    });
+    console.log('Back4App initialized successfully');
     return true;
   } catch (error) {
     console.error('Failed to initialize Back4App:', error);
@@ -41,12 +35,12 @@ export const initializeParse = () => {
 
 // REST API configuration for direct HTTP requests
 export const restApiConfig = {
-  appId: import.meta.env.VITE_BACK4APP_APP_ID,
-  restApiKey: 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT', // Using JS Key as REST API Key
-  serverURL: import.meta.env.VITE_BACK4APP_SERVER_URL,
+  appId: import.meta.env.VITE_BACK4APP_APP_ID || '2IRWN8rmJxc43OSfiWKRKQYmnIyFwRPHycYqtLlW',
+  restApiKey: import.meta.env.VITE_BACK4APP_JS_KEY || 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT',
+  serverURL: import.meta.env.VITE_BACK4APP_SERVER_URL || 'https://parseapi.back4app.com',
   headers: {
-    'X-Parse-Application-Id': import.meta.env.VITE_BACK4APP_APP_ID,
-    'X-Parse-REST-API-Key': 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT',
+    'X-Parse-Application-Id': import.meta.env.VITE_BACK4APP_APP_ID || '2IRWN8rmJxc43OSfiWKRKQYmnIyFwRPHycYqtLlW',
+    'X-Parse-REST-API-Key': import.meta.env.VITE_BACK4APP_JS_KEY || 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT',
     'Content-Type': 'application/json'
   }
 };
