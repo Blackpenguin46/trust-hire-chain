@@ -1,3 +1,4 @@
+
 import Parse from 'parse/dist/parse.min.js';
 
 // Ensure Parse is properly initialized for browser environment
@@ -35,6 +36,18 @@ export const initializeParse = () => {
   } catch (error) {
     console.error('Failed to initialize Back4App:', error);
     return false;
+  }
+};
+
+// REST API configuration for direct HTTP requests
+export const restApiConfig = {
+  appId: import.meta.env.VITE_BACK4APP_APP_ID,
+  restApiKey: 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT', // Using JS Key as REST API Key
+  serverURL: import.meta.env.VITE_BACK4APP_SERVER_URL,
+  headers: {
+    'X-Parse-Application-Id': import.meta.env.VITE_BACK4APP_APP_ID,
+    'X-Parse-REST-API-Key': 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT',
+    'Content-Type': 'application/json'
   }
 };
 
