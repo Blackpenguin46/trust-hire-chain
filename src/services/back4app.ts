@@ -47,10 +47,6 @@ export const restApiConfig = {
 
 // User Registration (Sign Up)
 export const signUpUser = async (username: string, password: string, email: string): Promise<Parse.User> => {
-  if (!import.meta.env.VITE_BACK4APP_APP_ID) {
-    throw new Error('Back4App is not configured. Please set up your environment variables.');
-  }
-
   const user = new Parse.User();
   user.set("username", username);
   user.set("password", password);
@@ -79,10 +75,6 @@ export const signUpUser = async (username: string, password: string, email: stri
 
 // User Login
 export const loginUser = async (username: string, password: string): Promise<Parse.User> => {
-  if (!import.meta.env.VITE_BACK4APP_APP_ID) {
-    throw new Error('Back4App is not configured. Please set up your environment variables.');
-  }
-
   try {
     const user = await Parse.User.logIn(username, password);
     console.log("User logged in successfully!", user);
@@ -95,10 +87,6 @@ export const loginUser = async (username: string, password: string): Promise<Par
 
 // User Logout
 export const logoutUser = async (): Promise<void> => {
-  if (!import.meta.env.VITE_BACK4APP_APP_ID) {
-    throw new Error('Back4App is not configured. Please set up your environment variables.');
-  }
-
   try {
     await Parse.User.logOut();
     console.log("User logged out successfully!");
@@ -110,11 +98,6 @@ export const logoutUser = async (): Promise<void> => {
 
 // Get Current User
 export const getCurrentUser = (): Parse.User | null => {
-  if (!import.meta.env.VITE_BACK4APP_APP_ID) {
-    console.warn('Back4App is not configured. Cannot get current user.');
-    return null;
-  }
-
   const currentUser = Parse.User.current();
   if (currentUser) {
     console.log("Current user:", currentUser);
