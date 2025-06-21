@@ -1,3 +1,4 @@
+
 import Parse from 'parse/dist/parse.min.js';
 
 // Ensure Parse is properly initialized for browser environment
@@ -9,6 +10,7 @@ if (typeof window !== 'undefined') {
 export const initializeParse = () => {
   // Use fallback values if environment variables are not available
   const appId = import.meta.env.VITE_BACK4APP_APP_ID || '2IRWN8rmJxc43OSfiWKRKQYmnIyFwRPHycYqtLlW';
+  // Use JavaScript Key for Parse SDK (not REST API key)
   const jsKey = import.meta.env.VITE_BACK4APP_JS_KEY || 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT';
   const serverURL = import.meta.env.VITE_BACK4APP_SERVER_URL || 'https://parseapi.back4app.com';
 
@@ -26,6 +28,7 @@ export const initializeParse = () => {
     Parse.User.enableUnsafeCurrentUser();
     
     console.log('Back4App initialized successfully');
+    console.log('Parse SDK version:', Parse.VERSION);
     return true;
   } catch (error) {
     console.error('Failed to initialize Back4App:', error);
@@ -36,11 +39,11 @@ export const initializeParse = () => {
 // REST API configuration for direct HTTP requests
 export const restApiConfig = {
   appId: import.meta.env.VITE_BACK4APP_APP_ID || '2IRWN8rmJxc43OSfiWKRKQYmnIyFwRPHycYqtLlW',
-  restApiKey: import.meta.env.VITE_BACK4APP_JS_KEY || 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT',
+  restApiKey: import.meta.env.VITE_BACK4APP_REST_API_KEY || 'YOUR_REST_API_KEY_HERE',
   serverURL: import.meta.env.VITE_BACK4APP_SERVER_URL || 'https://parseapi.back4app.com',
   headers: {
     'X-Parse-Application-Id': import.meta.env.VITE_BACK4APP_APP_ID || '2IRWN8rmJxc43OSfiWKRKQYmnIyFwRPHycYqtLlW',
-    'X-Parse-REST-API-Key': import.meta.env.VITE_BACK4APP_JS_KEY || 'e8BQYZJn6ZhItoB19ntaAIhWBUvVGeRvFZsg8bMT',
+    'X-Parse-REST-API-Key': import.meta.env.VITE_BACK4APP_REST_API_KEY || 'YOUR_REST_API_KEY_HERE',
     'Content-Type': 'application/json'
   }
 };
@@ -54,19 +57,28 @@ export const signUpUser = async (username: string, password: string, email: stri
 
   try {
     console.log('Attempting to sign up user:', username);
+    console.log('Parse server URL:', Parse.serverURL);
+    console.log('Parse app initialized:', !!Parse.applicationId);
+    
     await user.signUp();
     console.log("User signed up successfully!", user);
     return user;
   } catch (error: any) {
     console.error("Error during sign up:", error);
+    console.error("Error code:", error.code);
+    console.error("Error message:", error.message);
     
     // Handle specific Back4App error cases
     if (error.code === 202) {
       throw new Error('Username already taken. Please choose a different username.');
     } else if (error.code === 203) {
       throw new Error('Email already in use. Please use a different email address.');
-    } else if (error.message === 'unauthorized') {
-      throw new Error('User registration is currently disabled. Please contact support.');
+    } else if (error.message === 'unauthorized' || error.code === 141) {
+      throw new Error('User registration is not enabled on this Back4App application. Please check your Back4App dashboard settings under Security & Keys.');
+    } else if (error.code === 125) {
+      throw new Error('Invalid email address format.');
+    } else if (error.code === 120) {
+      throw new Error('Username/email is required.');
     }
     
     throw error;
