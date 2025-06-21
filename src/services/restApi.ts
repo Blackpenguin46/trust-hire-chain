@@ -2,7 +2,7 @@
 // REST API utility for direct HTTP requests to Back4App
 const API_BASE_URL = 'https://parseapi.back4app.com';
 const APP_ID = import.meta.env.VITE_BACK4APP_APP_ID || '2IRWN8rmJxc43OSfiWKRKQYmnIyFwRPHycYqtLlW';
-const REST_API_KEY = import.meta.env.VITE_BACK4APP_REST_API_KEY || 'YOUR_REST_API_KEY_HERE';
+const REST_API_KEY = import.meta.env.VITE_BACK4APP_REST_API_KEY || 'aiI63Zkde5gosFrI7lunA1BJf7rh85EwL4ckTo9A';
 
 const headers = {
   'X-Parse-Application-Id': APP_ID,
