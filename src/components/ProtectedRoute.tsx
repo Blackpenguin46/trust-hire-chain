@@ -31,8 +31,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   }
 
   if (requiredRole && user) {
-    const userType = user.get('userType')
-    const userRole = userType === 'seeker' ? 'job_seeker' : 'employer'
+    const userRole = user.userType
     if (userRole !== requiredRole) {
       // Redirect to the correct dashboard
       const redirectPath = userRole === 'job_seeker' ? '/dashboard/seeker' : '/dashboard/employer'

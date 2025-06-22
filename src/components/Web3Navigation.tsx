@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ const Web3Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +25,15 @@ const Web3Navigation = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    window.location.href = '/';
+    navigate('/');
+  };
+
+  const handleDashboardClick = () => {
+    if (user?.userType === 'employer') {
+      navigate('/dashboard/employer');
+    } else {
+      navigate('/dashboard/seeker');
+    }
   };
 
   const navItems = [
@@ -31,6 +41,7 @@ const Web3Navigation = () => {
     { label: 'For Talent', href: '/for-job-seekers' },
     { label: 'For Employers', href: '/for-employers' },
     { label: 'Verify', href: '/verify-credentials' },
+    { label: 'Jobs', href: '/jobs' },
   ];
 
   return (
@@ -47,7 +58,7 @@ const Web3Navigation = () => {
             {/* Logo */}
             <div className="flex items-center">
               <div className="text-xl font-semibold text-[--color-text-primary] cursor-pointer"
-                   onClick={() => window.location.href = '/'}>
+                   onClick={() => navigate('/')}>
                 TrustHire Chain
               </div>
             </div>
@@ -55,13 +66,13 @@ const Web3Navigation = () => {
             {/* Center Navigation - Desktop */}
             <div className="hidden lg:flex items-center space-x-8">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   className="nav-link text-sm font-medium py-2"
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </div>
 
@@ -76,10 +87,15 @@ const Web3Navigation = () => {
                     </span>
                   </Button>
                   
-                  <Button variant="ghost" size="sm" className="text-[--color-text-primary]/70 hover:text-[--color-text-primary] hover:bg-[--border]">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleDashboardClick}
+                    className="text-[--color-text-primary]/70 hover:text-[--color-text-primary] hover:bg-[--border]"
+                  >
                     <User className="h-4 w-4 mr-2" />
                     <span className="text-[#36B4A5] font-medium">
-                      {user.get('userType') === 'seeker' ? user.get('username') : user.get('companyName') || user.get('username')}
+                      {user.userType === 'employer' ? user.companyName || user.username : user.username}
                     </span>
                   </Button>
                   
@@ -95,13 +111,13 @@ const Web3Navigation = () => {
               ) : (
                 <div className="hidden md:flex items-center space-x-3">
                   <Button 
-                    onClick={() => window.location.href = '/auth'}
+                    onClick={() => navigate('/auth')}
                     className="secondary-button text-sm font-medium"
                   >
                     Sign In
                   </Button>
                   <Button 
-                    onClick={() => window.location.href = '/auth'}
+                    onClick={() => navigate('/auth')}
                     className="primary-button text-sm font-medium"
                   >
                     Sign Up
@@ -126,20 +142,20 @@ const Web3Navigation = () => {
             <div className="lg:hidden border-t border-[--border] bg-[--color-background]/98 backdrop-blur-xl slide-in">
               <div className="py-4 space-y-1">
                 {navItems.map((item) => (
-                  <a
+                  <Link
                     key={item.label}
-                    href={item.href}
+                    to={item.href}
                     onClick={() => setIsMenuOpen(false)}
                     className="block px-4 py-3 text-[--color-text-primary]/70 hover:text-[--color-text-primary] hover:bg-[--border] transition-all duration-200 rounded-lg mx-2"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
                 {!user && (
                   <div className="px-2 pt-4 space-y-2">
                     <Button 
                       onClick={() => {
-                        window.location.href = '/auth';
+                        navigate('/auth');
                         setIsMenuOpen(false);
                       }}
                       className="secondary-button w-full"
@@ -148,7 +164,7 @@ const Web3Navigation = () => {
                     </Button>
                     <Button 
                       onClick={() => {
-                        window.location.href = '/auth';
+                        navigate('/auth');
                         setIsMenuOpen(false);
                       }}
                       className="primary-button w-full"
@@ -167,5 +183,3 @@ const Web3Navigation = () => {
 };
 
 export default Web3Navigation;
-
-

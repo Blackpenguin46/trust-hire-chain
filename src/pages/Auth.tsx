@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,41 +6,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Sparkles, Shield, AlertCircle } from 'lucide-react';
+import { ArrowRight, Shield, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-
-const signInSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-const signUpSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  full_name: z.string().min(2, 'Full name must be at least 2 characters'),
-  company_name: z.string().optional(),
-});
-
-type SignInData = z.infer<typeof signInSchema>;
-type SignUpData = z.infer<typeof signUpSchema>;
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
   const [userType, setUserType] = useState<'job_seeker' | 'employer'>('job_seeker');
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    username: '',
+    companyName: ''
+  });
+  
   const { signIn, signUp, initialized } = useAuth();
-
-  const signInForm = useForm<SignInData>({
-    resolver: zodResolver(signInSchema),
-  });
-
-  const signUpForm = useForm<SignUpData>({
-    resolver: zodResolver(signUpSchema),
-  });
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Show initialization status
   if (!initialized) {
@@ -51,7 +36,7 @@ const Auth = () => {
               Backend Connection Issue
             </CardTitle>
             <CardDescription className="text-gray-300">
-              Unable to connect to Back4App backend. Please check your environment variables.
+              Unable to connect to Supabase backend. Please check your configuration.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -59,53 +44,80 @@ const Auth = () => {
     );
   }
 
-  const handleSignIn = async (data: SignInData) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
-    setError(null);
     
     try {
-      const { error } = await signIn(data.email, data.password);
+      const { user, error } = await signIn(formData.email, formData.password);
       if (error) {
-        setError(error.message || 'Sign in failed');
-      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'Sign in failed',
+          variant: 'destructive',
+        });
+      } else if (user) {
+        toast({
+          title: 'Success',
+          description: 'Signed in successfully!',
+        });
         // Redirect based on user type
-        const currentUser = await import('@/services/back4app').then(m => m.getCurrentUser());
-        if (currentUser) {
-          const type = currentUser.get('userType');
-          if (type === 'seeker') {
-            window.location.href = '/dashboard/seeker';
-          } else if (type === 'employer') {
-            window.location.href = '/dashboard/employer';
-          }
+        if (user.userType === 'employer') {
+          navigate('/dashboard/employer');
+        } else {
+          navigate('/dashboard/seeker');
         }
       }
     } catch (err: any) {
-      setError(err.message);
+      toast({
+        title: 'Error',
+        description: err.message || 'An unexpected error occurred',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignUp = async (data: SignUpData) => {
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
-    setError(null);
     
     try {
-      const { error } = await signUp(
-        data.email,
-        data.password,
-        data.email,
-        userType === 'job_seeker' ? 'seeker' : 'employer',
-        userType === 'employer' ? data.company_name : undefined
+      const { user, error } = await signUp(
+        formData.username,
+        formData.email,
+        formData.password,
+        userType,
+        userType === 'employer' ? formData.companyName : undefined
       );
       
       if (error) {
-        setError(error.message || 'Sign up failed');
-      } else {
-        setError('Account created successfully! Please sign in.');
+        toast({
+          title: 'Error',
+          description: error.message || 'Sign up failed',
+          variant: 'destructive',
+        });
+      } else if (user) {
+        toast({
+          title: 'Success',
+          description: 'Account created successfully! Please check your email to verify your account.',
+        });
+        setIsLogin(true); // Switch to login view
       }
     } catch (err: any) {
-      setError(err.message);
+      toast({
+        title: 'Error',
+        description: err.message || 'An unexpected error occurred',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
@@ -128,19 +140,12 @@ const Auth = () => {
                 Decentralized Identity Powered
               </Badge>
               <Badge className="mx-auto bg-green-500/20 text-green-300 border border-green-400/30">
-                Backend Connected ✓
+                Supabase Connected ✓
               </Badge>
             </div>
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 text-red-400" />
-                <span className="text-red-300 text-sm">{error}</span>
-              </div>
-            )}
-
             <Tabs value={userType} onValueChange={(value) => setUserType(value as 'job_seeker' | 'employer')}>
               <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm border border-white/20">
                 <TabsTrigger 
@@ -158,54 +163,48 @@ const Auth = () => {
               </TabsList>
               
               <TabsContent value="job_seeker" className="space-y-4 mt-6">
-                <form onSubmit={isLogin ? signInForm.handleSubmit(handleSignIn) : signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
+                <form onSubmit={isLogin ? handleSignIn : handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-gray-300">Email</Label>
                     <Input 
                       id="email" 
+                      name="email"
                       type="email" 
                       placeholder="your@email.com" 
                       className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
-                      {...(isLogin ? signInForm.register('email') : signUpForm.register('email'))}
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
                     />
-                    {isLogin && signInForm.formState.errors.email && (
-                      <p className="text-red-400 text-sm">{signInForm.formState.errors.email.message}</p>
-                    )}
-                    {!isLogin && signUpForm.formState.errors.email && (
-                      <p className="text-red-400 text-sm">{signUpForm.formState.errors.email.message}</p>
-                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="password" className="text-gray-300">Password</Label>
                     <Input 
                       id="password" 
+                      name="password"
                       type="password" 
                       placeholder="••••••••" 
                       className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
-                      {...(isLogin ? signInForm.register('password') : signUpForm.register('password'))}
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
                     />
-                    {isLogin && signInForm.formState.errors.password && (
-                      <p className="text-red-400 text-sm">{signInForm.formState.errors.password.message}</p>
-                    )}
-                    {!isLogin && signUpForm.formState.errors.password && (
-                      <p className="text-red-400 text-sm">{signUpForm.formState.errors.password.message}</p>
-                    )}
                   </div>
 
                   {!isLogin && (
                     <div className="space-y-2">
-                      <Label htmlFor="full_name" className="text-gray-300">Full Name</Label>
+                      <Label htmlFor="username" className="text-gray-300">Full Name</Label>
                       <Input 
-                        id="full_name" 
+                        id="username" 
+                        name="username"
                         type="text" 
                         placeholder="John Doe" 
                         className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20"
-                        {...signUpForm.register('full_name')}
+                        value={formData.username}
+                        onChange={handleInputChange}
+                        required
                       />
-                      {signUpForm.formState.errors.full_name && (
-                        <p className="text-red-400 text-sm">{signUpForm.formState.errors.full_name.message}</p>
-                      )}
                     </div>
                   )}
 
@@ -230,65 +229,61 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="employer" className="space-y-4 mt-6">
-                <form onSubmit={isLogin ? signInForm.handleSubmit(handleSignIn) : signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
+                <form onSubmit={isLogin ? handleSignIn : handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-gray-300">Email</Label>
                     <Input 
                       id="email" 
+                      name="email"
                       type="email" 
                       placeholder="your@company.com" 
                       className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/20"
-                      {...(isLogin ? signInForm.register('email') : signUpForm.register('email'))}
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
                     />
-                    {isLogin && signInForm.formState.errors.email && (
-                      <p className="text-red-400 text-sm">{signInForm.formState.errors.email.message}</p>
-                    )}
-                    {!isLogin && signUpForm.formState.errors.email && (
-                      <p className="text-red-400 text-sm">{signUpForm.formState.errors.email.message}</p>
-                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="password" className="text-gray-300">Password</Label>
                     <Input 
                       id="password" 
+                      name="password"
                       type="password" 
                       placeholder="••••••••" 
                       className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/20"
-                      {...(isLogin ? signInForm.register('password') : signUpForm.register('password'))}
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
                     />
-                    {isLogin && signInForm.formState.errors.password && (
-                      <p className="text-red-400 text-sm">{signInForm.formState.errors.password.message}</p>
-                    )}
-                    {!isLogin && signUpForm.formState.errors.password && (
-                      <p className="text-red-400 text-sm">{signUpForm.formState.errors.password.message}</p>
-                    )}
                   </div>
 
                   {!isLogin && (
                     <>
                       <div className="space-y-2">
-                        <Label htmlFor="full_name" className="text-gray-300">Full Name</Label>
+                        <Label htmlFor="username" className="text-gray-300">Full Name</Label>
                         <Input 
-                          id="full_name" 
+                          id="username" 
+                          name="username"
                           type="text" 
                           placeholder="John Doe" 
                           className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/20"
-                          {...signUpForm.register('full_name')}
+                          value={formData.username}
+                          onChange={handleInputChange}
+                          required
                         />
-                        {signUpForm.formState.errors.full_name && (
-                          <p className="text-red-400 text-sm">{signUpForm.formState.errors.full_name.message}</p>
-                        )}
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="company_name" className="text-gray-300">Company Name</Label>
+                        <Label htmlFor="companyName" className="text-gray-300">Company Name</Label>
                         <Input 
-                          id="company_name" 
+                          id="companyName" 
+                          name="companyName"
                           type="text" 
                           placeholder="Your Company Ltd." 
                           className="bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-green-400 focus:ring-green-400/20"
-                          {...signUpForm.register('company_name')}
+                          value={formData.companyName}
+                          onChange={handleInputChange}
                         />
                       </div>
                     </>
