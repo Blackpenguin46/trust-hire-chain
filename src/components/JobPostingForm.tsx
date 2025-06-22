@@ -19,9 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { Job } from '../services/back4app';
-import Parse from 'parse/dist/parse.min.js';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { supabaseAuthService } from '../services/supabaseAuth';
 
 const jobPostingSchema = z.object({
   title: z.string().min(1, 'Job title is required'),
@@ -47,41 +47,47 @@ export function JobPostingForm() {
       employmentType: '',
       applicationDeadline: '',
       requiredSkills: '',
-      tier: 'Standard',
+      tier: 'basic',
     },
   });
 
   const onSubmit = async (data: JobPostingFormData) => {
     try {
-      const currentUser = Parse.User.current();
+      const currentUser = await supabaseAuthService.getCurrentUser();
       if (!currentUser) {
         toast.error('You must be logged in to post a job.');
         return;
       }
 
-      const job = new Job();
-      job.title = data.title;
-      job.description = data.description;
-      job.location = data.location;
-      job.salaryRange = data.salaryRange;
-      job.employmentType = data.employmentType;
-      job.applicationDeadline = new Date(data.applicationDeadline);
-      job.requiredSkills = data.requiredSkills.split(',').map(skill => skill.trim());
-      job.employer = currentUser;
-      job.isActive = true;
-      job.tier = data.tier;
-      job.isFeatured = data.tier !== 'Standard';
-      job.paymentStatus = 'Pending';
+      const jobData = {
+        title: data.title,
+        description: data.description,
+        location: data.location,
+        salary_range: data.salaryRange,
+        employment_type: data.employmentType as any,
+        application_deadline: data.applicationDeadline,
+        required_skills: data.requiredSkills.split(',').map(skill => skill.trim()),
+        employer_id: currentUser.id,
+        is_active: true,
+        tier: data.tier as any,
+        is_featured: data.tier !== 'basic',
+        payment_status: 'pending' as any
+      };
 
       // Simulate payment process for premium tiers
-      if (data.tier !== 'Standard') {
+      if (data.tier !== 'basic') {
         toast.info(`Processing payment for ${data.tier} job posting...`);
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate network delay
-        job.paymentStatus = 'Paid';
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        jobData.payment_status = 'completed' as any;
         toast.success(`Your ${data.tier} job posting payment was successful!`);
       }
 
-      await job.save();
+      const { error } = await supabase
+        .from('jobs')
+        .insert([jobData]);
+
+      if (error) throw error;
+
       toast.success('Job posted successfully!');
       form.reset();
     } catch (error: any) {
@@ -166,11 +172,11 @@ export function JobPostingForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Full-time">Full-time</SelectItem>
-                  <SelectItem value="Part-time">Part-time</SelectItem>
-                  <SelectItem value="Contract">Contract</SelectItem>
-                  <SelectItem value="Freelance">Freelance</SelectItem>
-                  <SelectItem value="Internship">Internship</SelectItem>
+                  <SelectItem value="full-time">Full-time</SelectItem>
+                  <SelectItem value="part-time">Part-time</SelectItem>
+                  <SelectItem value="contract">Contract</SelectItem>
+                  <SelectItem value="freelance">Freelance</SelectItem>
+                  <SelectItem value="internship">Internship</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -222,9 +228,9 @@ export function JobPostingForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Standard">Standard (Free)</SelectItem>
-                  <SelectItem value="Featured">Featured ($10)</SelectItem>
-                  <SelectItem value="Premium">Premium ($25)</SelectItem>
+                  <SelectItem value="basic">Basic (Free)</SelectItem>
+                  <SelectItem value="featured">Featured ($10)</SelectItem>
+                  <SelectItem value="premium">Premium ($25)</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

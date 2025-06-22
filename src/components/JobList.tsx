@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Job } from '../services/back4app';
-import Parse from '../services/back4app';
+import { supabase } from '@/integrations/supabase/client';
+import { supabaseAuthService } from '../services/supabaseAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -13,7 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { Loader2, MapPin, Briefcase, DollarSign, Calendar, Search, Filter } from 'lucide-react';
+import { Loader2, MapPin, Briefcase, DollarSign, Calendar, Search } from 'lucide-react';
+import type { Database } from '@/integrations/supabase/types';
+
+type Job = Database['public']['Tables']['jobs']['Row'];
 
 interface JobListProps {
   showEmployerJobs?: boolean;
@@ -37,21 +40,22 @@ export function JobList({ showEmployerJobs = false }: JobListProps) {
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      const query = new Parse.Query(Job);
+      let query = supabase.from('jobs').select('*');
       
       if (showEmployerJobs) {
-        const currentUser = Parse.User.current();
+        const currentUser = await supabaseAuthService.getCurrentUser();
         if (!currentUser) {
           throw new Error('You must be logged in to view your job postings');
         }
-        query.equalTo('employer', currentUser);
+        query = query.eq('employer_id', currentUser.id);
       } else {
-        query.equalTo('isActive', true);
+        query = query.eq('is_active', true);
       }
       
-      query.descending('createdAt');
-      const results = await query.find();
-      setJobs(results);
+      const { data, error } = await query.order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setJobs(data || []);
     } catch (error) {
       console.error('Error fetching jobs:', error);
     } finally {
@@ -63,8 +67,8 @@ export function JobList({ showEmployerJobs = false }: JobListProps) {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          job.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLocation = !locationFilter || job.location.toLowerCase().includes(locationFilter.toLowerCase());
-    const matchesEmploymentType = !employmentTypeFilter || job.employmentType === employmentTypeFilter;
-    const matchesSalary = !salaryFilter || job.salaryRange.includes(salaryFilter);
+    const matchesEmploymentType = !employmentTypeFilter || job.employment_type === employmentTypeFilter;
+    const matchesSalary = !salaryFilter || (job.salary_range && job.salary_range.includes(salaryFilter));
     
     return matchesSearch && matchesLocation && matchesEmploymentType && matchesSalary;
   });
@@ -72,13 +76,17 @@ export function JobList({ showEmployerJobs = false }: JobListProps) {
   const sortedJobs = [...filteredJobs].sort((a, b) => {
     switch (sortBy) {
       case 'newest':
-        return b.createdAt.getTime() - a.createdAt.getTime();
+        return new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime();
       case 'oldest':
-        return a.createdAt.getTime() - b.createdAt.getTime();
+        return new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime();
       case 'salary-high':
-        return parseInt(b.salaryRange.replace(/[^0-9]/g, '')) - parseInt(a.salaryRange.replace(/[^0-9]/g, ''));
+        const bSalary = parseInt((b.salary_range || '').replace(/[^0-9]/g, '')) || 0;
+        const aSalary = parseInt((a.salary_range || '').replace(/[^0-9]/g, '')) || 0;
+        return bSalary - aSalary;
       case 'salary-low':
-        return parseInt(a.salaryRange.replace(/[^0-9]/g, '')) - parseInt(b.salaryRange.replace(/[^0-9]/g, ''));
+        const aSalaryLow = parseInt((a.salary_range || '').replace(/[^0-9]/g, '')) || 0;
+        const bSalaryLow = parseInt((b.salary_range || '').replace(/[^0-9]/g, '')) || 0;
+        return aSalaryLow - bSalaryLow;
       default:
         return 0;
     }
@@ -139,10 +147,10 @@ export function JobList({ showEmployerJobs = false }: JobListProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">All Types</SelectItem>
-              <SelectItem value="Full-time">Full-time</SelectItem>
-              <SelectItem value="Part-time">Part-time</SelectItem>
-              <SelectItem value="Contract">Contract</SelectItem>
-              <SelectItem value="Internship">Internship</SelectItem>
+              <SelectItem value="full-time">Full-time</SelectItem>
+              <SelectItem value="part-time">Part-time</SelectItem>
+              <SelectItem value="contract">Contract</SelectItem>
+              <SelectItem value="internship">Internship</SelectItem>
             </SelectContent>
           </Select>
           <Select value={salaryFilter} onValueChange={setSalaryFilter}>
@@ -187,19 +195,19 @@ export function JobList({ showEmployerJobs = false }: JobListProps) {
                     </div>
                     <div className="flex items-center">
                       <Briefcase className="h-4 w-4 mr-1" />
-                      {job.employmentType}
+                      {job.employment_type}
                     </div>
                     <div className="flex items-center">
                       <DollarSign className="h-4 w-4 mr-1" />
-                      {job.salaryRange}
+                      {job.salary_range}
                     </div>
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
-                      Posted {new Date(job.createdAt).toLocaleDateString()}
+                      Posted {new Date(job.created_at!).toLocaleDateString()}
                     </div>
                   </div>
                 </div>
-                {job.isFeatured && (
+                {job.is_featured && (
                   <Badge variant="secondary">Featured</Badge>
                 )}
               </div>
@@ -208,7 +216,7 @@ export function JobList({ showEmployerJobs = false }: JobListProps) {
               <p className="text-muted-foreground line-clamp-2">{job.description}</p>
               <div className="flex justify-between items-center mt-4">
                 <div className="flex flex-wrap gap-2">
-                  {job.requiredSkills.map((skill) => (
+                  {job.required_skills?.map((skill) => (
                     <Badge key={skill} variant="outline">
                       {skill}
                     </Badge>
@@ -254,4 +262,4 @@ export function JobList({ showEmployerJobs = false }: JobListProps) {
       )}
     </div>
   );
-} 
+}

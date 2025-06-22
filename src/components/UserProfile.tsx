@@ -1,12 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
-import Parse from 'parse';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Web3Navigation from '@/components/Web3Navigation';
+import { supabaseAuthService } from '../services/supabaseAuth';
 
 const UserProfile = () => {
   const [fullName, setFullName] = useState('');
@@ -16,35 +17,30 @@ const UserProfile = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const currentUser = Parse.User.current();
-    if (currentUser) {
-      setFullName(currentUser.get('fullName') || '');
-      setBio(currentUser.get('bio') || '');
-      setCompanyName(currentUser.get('companyName') || '');
-      setIsEmployer(currentUser.get('userType') === 'employer');
-    }
+    loadProfile();
   }, []);
+
+  const loadProfile = async () => {
+    try {
+      const profile = await supabaseAuthService.getUserProfile();
+      setFullName(profile.username || '');
+      setBio(''); // Bio field doesn't exist in current schema, you may want to add it
+      setCompanyName(profile.companyName || '');
+      setIsEmployer(profile.userType === 'employer');
+    } catch (error) {
+      console.error('Error loading profile:', error);
+    }
+  };
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const currentUser = Parse.User.current();
-    if (!currentUser) {
-      toast({
-        title: 'Error',
-        description: 'You must be logged in to update your profile.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    currentUser.set('fullName', fullName);
-    currentUser.set('bio', bio);
-    if (isEmployer) {
-      currentUser.set('companyName', companyName);
-    }
-
+    
     try {
-      await currentUser.save();
+      await supabaseAuthService.updateProfile({
+        username: fullName,
+        companyName: isEmployer ? companyName : undefined
+      });
+      
       toast({
         title: 'Success',
         description: 'Profile updated successfully!',
@@ -93,5 +89,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
-
