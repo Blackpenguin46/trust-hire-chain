@@ -30,11 +30,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Initialize Supabase auth service
+        console.log('Initializing Supabase connection...')
+        // Test Supabase connection
         const isInitialized = await supabaseAuthService.initialize()
         setInitialized(isInitialized)
         
         if (isInitialized) {
+          console.log('Supabase connected successfully')
           // Check for current user
           try {
             const currentUser = await supabaseAuthService.getCurrentUser()
@@ -42,13 +44,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               const profile = await supabaseAuthService.getUserProfile()
               setUser(profile)
               console.log('Auth initialization complete. Current user:', profile.username)
+            } else {
+              console.log('No current user found')
+              setUser(null)
             }
           } catch (error) {
-            console.log('No current user found')
+            console.log('No current user session:', error)
             setUser(null)
           }
         } else {
-          console.warn('Supabase initialization failed')
+          console.error('Failed to connect to Supabase')
         }
       } catch (error) {
         console.error('Error initializing auth:', error)
@@ -91,8 +96,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     setLoading(true)
     try {
+      console.log('Starting sign in process for:', email)
       const profile = await supabaseAuthService.login(email, password)
       setUser(profile)
+      console.log('Sign in successful for:', profile.username)
       return { user: profile, error: null }
     } catch (error: any) {
       console.error('Sign in failed:', error)
@@ -105,8 +112,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     setLoading(true)
     try {
-      await supabaseAuthService.logout()
+      await supabaseAuthService.signOut()
       setUser(null)
+      console.log('Sign out successful')
     } catch (error) {
       console.error('Sign out failed:', error)
     } finally {

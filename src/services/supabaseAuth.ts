@@ -30,14 +30,17 @@ class SupabaseAuthService {
           data: {
             username,
             user_type: userType
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/`
         }
       });
 
       if (error) throw error;
       if (!data.user) throw new Error('User creation failed');
 
-      // The profile will be created automatically via the trigger
+      // Wait a moment for the profile to be created by the trigger
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       return this.getUserProfile();
     } catch (error: any) {
       console.error('Error signing up:', error);
@@ -128,8 +131,14 @@ class SupabaseAuthService {
 
   async initialize(): Promise<boolean> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      return !!user;
+      // Test the connection by making a simple query
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Supabase connection error:', error);
+        return false;
+      }
+      console.log('Supabase connected successfully');
+      return true;
     } catch (error) {
       console.error('Error initializing auth service:', error);
       return false;
